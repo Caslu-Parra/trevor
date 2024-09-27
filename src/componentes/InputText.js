@@ -1,10 +1,10 @@
 import '../App.css';
 import React from 'react';
 
-function InputText (){
+function InputText (props){
     return (
-        <div id="inpText">
-            <input type='text' placeholder="Destino"/>
+        <div id={props.id}>
+            <input type='text' placeholder={props.children}/>
         </div>
     )
 }
