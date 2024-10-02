@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import './index.css';
+import './App.css'
 import InputText from './componentes/InputText';
 import DatePicker from './componentes/DatePicker';
 
