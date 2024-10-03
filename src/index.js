@@ -1,15 +1,15 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import './App.css'
-import InputText from './componentes/InputText';
-import DatePicker from './componentes/DatePicker';
+import { createRoot } from 'react-dom/client';
+import Historico from './componentes/left/historico'
+import Roteiro from './componentes/left/roteiro'
 
-const root = ReactDOM.createRoot(document.getElementById('root'));
 
+const root = createRoot(document.getElementById('main'));
 root.render(
     <div>
-        <InputText id="input-text">Insira seu destino</InputText>
-        <DatePicker id="start-date">Insira sua data de início</DatePicker>
-        <DatePicker id="end-date">Insira sua data de saída</DatePicker>
+        <Historico>
+            <Roteiro title='Vanessa Tucker' img='https://bootdey.com/img/Content/avatar/avatar5.png' data='2024-06-12 07:10:56' />
+            <Roteiro title='William Harris' img='https://bootdey.com/img/Content/avatar/avatar2.png' data='2024-07-11 09:20:15' />
+            <Roteiro title='Fiona Green' img='https://bootdey.com/img/Content/avatar/avatar3.png' data='2023-10-01 15:35:37' />
+        </Historico>
     </div>
 );
