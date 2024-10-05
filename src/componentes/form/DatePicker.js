@@ -1,8 +1,4 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client'; 
-import 'bootstrap/dist/css/bootstrap.min.css';
-
-function DatePicker(props) {
+export default function DatePicker(props) {
     return (
         <div className="Date">
             <p>{props.children}</p>
@@ -11,5 +7,3 @@ function DatePicker(props) {
         </div>
     );
 }
-
-export default DatePicker
