@@ -2,7 +2,7 @@ import trevorImg from '../../img/trevor-02.png'
 export default function Chat(props) {
     return (
         <div className="col-12 col-sm-7 col-lg-8 col-xl-9">
-            <div className="py-2 px-4 border-bottom d-none d-lg-block">
+            <div className="py-2 px-4 border-bottom"> 
                 <div className="d-flex align-items-center">
                     <div className="position-relative">
                         <img src={trevorImg} className="rounded-circle mr-1" alt="Logomarca assistente Trevor" width="60" height="60" />

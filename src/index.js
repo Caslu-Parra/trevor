@@ -3,6 +3,8 @@ import Historico from './componentes/left/historico'
 import Roteiro from './componentes/left/roteiro'
 import Chat from './componentes/right/chat';
 import Message from './componentes/right/message';
+import Forms from './componentes/form/forms';
+import Modal from './componentes/form/modal';
 
 const root = createRoot(document.getElementById('main'));
 root.render(
@@ -16,5 +18,8 @@ root.render(
             <Message dtEnvio='2024-06-12 14:48:56' owner='you'>Hello, can you hear me?</Message>
             <Message dtEnvio='2024-06-12 14:49:12' owner='trevor'>Hey human! Yes, I can</Message>
         </Chat>
+        <Modal>
+            <Forms/>
+        </Modal>
     </div>
 );

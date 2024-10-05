@@ -1,13 +1,12 @@
-
 export default function Historico(props) {
     return (
         <div className="col-12 col-sm-5 col-lg-4 col-xl-3 border-right">
-            <div className="px-4 d-none d-md-block">
+            <div className="px-4">
                 <h1 className="h5 mt-4">Historico de Roteiros</h1>
 
                 <div className="d-flex align-items-center">
                     <div className="flex-grow-1">
-                        <input type="text" className="form-control my-3" placeholder="Pesquisar..." />
+                        <button type="button" className="btn btn-primary w-100" data-toggle="modal" data-target="#exampleModal"> Pesquisar </button>
                     </div>
                 </div>
             </div>
