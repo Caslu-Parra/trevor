@@ -3,6 +3,8 @@ import './DatePicker.css';
 
 export default function DatePicker(props) {
     return (
+        <div>
+        <label htmlFor={props.id}>{props.children}</label>
         <div className="date-picker-container">
             <span className="calendar-icon">📅</span>
             <input
@@ -13,6 +15,7 @@ export default function DatePicker(props) {
                 min="1900-01-01"
                 max="2099-12-31"
             />
+        </div>
         </div>
     );
 }

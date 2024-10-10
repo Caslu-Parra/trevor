@@ -1,0 +1,23 @@
+.date-picker-container {
+    display: flex; 
+    align-items: center; 
+    border: 1px solid #ccc; 
+    border-radius: 4px; 
+    padding: 5px; 
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); 
+    width: 5cm; 
+}
+
+.calendar-icon {
+    margin-right: 8px; 
+    font-size: 20px; 
+    color: #ec0a0a; 
+}
+
+.date-input {
+    flex: 1; 
+    height: 30px; 
+    border: none; 
+    outline: none; 
+    font-size: 16px; 
+}
