@@ -1,0 +1,12 @@
+.observacao-input {
+    border: 1px solid #ccc; /* Borda cinza */
+    border-radius: 4px; /* Bordas arredondadas */
+    padding: 10px; /* Espaçamento interno */
+    box-shadow: none; /* Remove sombra, se houver */
+    resize: none; /* Impede o redimensionamento */
+}
+
+/* Centraliza o label, se necessário */
+.p-float-label {
+    text-align: center;
+}

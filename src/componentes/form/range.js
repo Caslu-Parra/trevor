@@ -1,8 +1,21 @@
-export default function Range(props) {
+import React from 'react';
+
+export default function Range({ id, min, max, step, value, onChange }) {
     return (
         <div className="form-group">
-            <label for={props.id}>{props.children}</label>
-            <input type="range" className="form-control-range" id={props.id} min='0' max='10' step='2'/>
+            <label htmlFor={id}>Quanto você pretende gastar?</label>
+            <input
+                type="range"
+                id={id}
+                min={min}
+                max={max}
+                step={step}
+                value={value}
+                onChange={onChange}
+                style={{ width: '100%' }} 
+                className="form-range" 
+            />
+            <p>Valor por pessoa: R${value}</p>
         </div>
-    )
+    );
 }
