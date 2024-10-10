@@ -1,6 +1,6 @@
 import DatePicker from "./DatePicker";
 import InputText from "./InputText";
-import Range from "./Range";
+import Range from "./range";
 import ComboBox from "./ComboBox";
 import CheckBox from "./CheckBox";
 import React, { useState } from 'react';
