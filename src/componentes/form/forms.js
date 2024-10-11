@@ -67,10 +67,10 @@ export default function Forms() {
                     {step === 1 && (
                         <div>
                             <div className="row">
-                                <div className="col-6">
+                                <div className="col-12">
                                     <InputText
                                         id="destino"
-                                        
+
                                         value={cityName}
                                         onChange={(e) => setCityName(e.target.value)}
                                         required
@@ -100,7 +100,7 @@ export default function Forms() {
                     {step === 2 && (
                         <div>
                             <div className="row">
-                                <div className="col-6">
+                                <div className="col-12">
                                     <ComboBox
                                         id="tipoViagem"
                                         label="Tipo de Viagem:"
@@ -112,7 +112,7 @@ export default function Forms() {
                                 </div>
                             </div>
                             <div className="row">
-                                <div className="col-6">
+                                <div className="col-12">
                                     <div className="checkbox-container ">
                                         <CheckBox
                                             id="viajandoComCrianca"
@@ -144,7 +144,7 @@ export default function Forms() {
                     {step === 3 && (
                         <div>
                             <div className="row">
-                                <div className="col-6">
+                                <div className="col-12">
                                     <Range
                                         id="moneyRange"
                                         min="0"
@@ -156,7 +156,7 @@ export default function Forms() {
                                 </div>
                             </div>
                             <div className="row">
-                                <div className="col-6">
+                                <div className="col-12">
                                     <Observacao />
                                 </div>
                             </div>
