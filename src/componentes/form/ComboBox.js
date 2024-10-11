@@ -1,3 +1,4 @@
+
 export default function ComboBox(props) {
     return (
         <div id={props.id} className="form-group">
@@ -7,7 +8,7 @@ export default function ComboBox(props) {
                 value={props.value}
                 onChange={props.onChange}
                 required={props.required}
-                className="form-select" // Classe Bootstrap para estilização
+                className="date-picker-container" // Classe Bootstrap para estilização
             >
                 <option value="">Selecione</option>
                 {props.options.map((option, index) => (

@@ -1,3 +1,5 @@
+import './CheckBox.css';
+
 export default function CheckBox(props) {
     return (
         <div id={props.id}>
