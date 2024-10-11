@@ -2,12 +2,13 @@ export default function InputText(props) {
     return (
         <div id={props.id}>
             <label>
-              Qual cidade voce vai? 
+              Qual lugar você pretende visitar? 
             </label>
             <input
                 type='text'
+                className="card flex justify-content-center"
                 placeholder={props.children}
-                style={{ width: '100%', padding: '0,5px', fontSize: '16px' }} 
+                style={{ width: '100%', padding: '6px', fontSize: '16px' }} 
             />
         </div>
     );
