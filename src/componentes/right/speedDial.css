@@ -1,0 +1,13 @@
+.custom-speed-dial .p-speeddial-action {
+    margin-bottom: 10px; /* Ajuste conforme necessário */
+}
+
+.custom-speed-dial .p-speeddial-action .p-button {
+    width: 50px; /* Ajuste conforme necessário */
+    height: 50px; /* Ajuste conforme necessário */
+    border-radius: 50%;
+}
+
+.custom-icon {
+    font-size: 2em; /* Ajuste o tamanho conforme necessário */
+}
