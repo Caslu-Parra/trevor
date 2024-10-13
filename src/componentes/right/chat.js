@@ -61,7 +61,7 @@ export default function Chat(props) {
                         position: 'absolute', 
                         right: '1rem', 
                         bottom: '1rem',
-                        zIndex: 1
+                        zIndex: 1 
                     }} 
                     buttonStyle={{ 
                         background: "#076df2", 
