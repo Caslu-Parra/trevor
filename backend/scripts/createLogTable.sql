@@ -1,0 +1,6 @@
+CREATE TABLE IF NOT EXISTS log_exeo(  
+    id_exeo int NOT NULL PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+    req_message VARCHAR(500) NOT NULL,
+    res_message VARCHAR(500) NOT NULL,
+    dt_exeo TIMESTAMP NOT NULL
+);
