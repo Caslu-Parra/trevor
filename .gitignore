@@ -24,4 +24,4 @@ yarn-error.log*
 
 #banco de dados
 .env
-.ca.pem
+ca.pem
