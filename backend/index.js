@@ -7,7 +7,7 @@ const dbService = require('./dbService');
 const app = express();
 app.use(express.json());
 
-const port = process.env.PORT || 3000;
+const port = 3000;
 
 app.listen(port, () => console.log(`Executando na porta: ${port}`));
 
