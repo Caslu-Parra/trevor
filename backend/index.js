@@ -23,3 +23,12 @@ app.get('/data', async (req, res) => {
         res.status(500).json({ error: 'Erro ao se concetar ao servidor SQL' });
     }
 });
+
+app.get('/historicos', async (req, res) => {
+    try {
+        const data = await dbService.getHistoricos();
+        res.json(data);
+    } catch (error) {
+        res.status(500).json({ error: 'Erro ao se concetar ao servidor SQL' });
+    }
+});
