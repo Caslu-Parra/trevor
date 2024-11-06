@@ -8,6 +8,8 @@ export default function InputText(props) {
                 type='text'
                 className="card flex justify-content-center"
                 placeholder={props.children}
+                value={props.value}
+                onChange={props.onChange}
                 style={{ width: '100%', padding: '6px', fontSize: '16px' }} 
             />
         </div>

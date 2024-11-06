@@ -53,6 +53,17 @@ app.post('/chatbot', async (req, res) => { // Alterado para POST
     }
 });
 
+app.post('/save', async (req, res) => {
+    const { logData, roteiroData } = req.body; // Obtém os dados do corpo da requisição
+
+    try {
+        const savedData = await dbService.saveHistorico(logData, roteiroData);
+        res.json(savedData);
+    } catch (error) {
+        res.status(500).json({ error: 'Erro ao salvar os dados' });
+    }
+});
+
 // Para qualquer outra rota, sirva o index.html do build do React
 app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, 'frontend/build', 'index.html'));

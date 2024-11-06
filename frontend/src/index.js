@@ -8,7 +8,7 @@ import Modal from './componentes/form/modal';
 //endpoints
 import DataComponent from './endPoints/dataClient';
 import HistoricosComponent from './endPoints/historicoClient';
-import ChatbotComponent from './endPoints/geminiClient';
+// import ChatbotComponent from './endPoints/geminiClient';
 
 const root = createRoot(document.getElementById('main'));
 root.render(
@@ -28,7 +28,7 @@ root.render(
     </div>
     {/* provisorio para testes */}
     <hr></hr>
-    <ChatbotComponent/>
+    {/* <ChatbotComponent/> */}
     <DataComponent/>
     <HistoricosComponent/>
     </div>

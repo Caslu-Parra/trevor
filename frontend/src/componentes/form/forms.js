@@ -5,18 +5,23 @@ import ComboBox from "./ComboBox";
 import CheckBox from "./CheckBox";
 import React, { useState } from 'react';
 import Observacao from "./Observacao";
+import { saveData } from '../../endPoints/saveClient';
+import { getGeminiResponse } from '../../endPoints/geminiClient';
 import './DatePicker.css';
 import './CheckBox.css';
 
 export default function Forms() {
     const [step, setStep] = useState(1); // Controla qual pergunta está sendo exibida
     const [cityName, setCityName] = useState('');
-    const [days, setDays] = useState('');
+    const [departureDate, setDepartureDate] = useState('');
+    const [returnDate, setReturnDate] = useState('');
     const [tripType, setTripType] = useState('');
     const [travelWithKids, setTravelWithKids] = useState(false);
     const [travelAlone, setTravelAlone] = useState(false);
     const [travelWithPets, setTravelWithPets] = useState(false);
     const [budget, setBudget] = useState(5000);  // Estado para o range de dinheiro
+    const [obsViagem, setObsViagem] = useState(''); // Estado para observações da viagem
+    const [countryName, setCountryName] = useState(''); // Estado para o nome do país
 
     const tripOptions = [
         "Paisagens Naturais",
@@ -44,19 +49,50 @@ export default function Forms() {
     // Calcula a porcentagem do progresso
     const progressPercentage = ((step / 3) * 100).toFixed(2);
 
-
-    const handleSubmit = (event) => {
+    const handleSubmit = async (event) => {
         event.preventDefault();
-        console.log({
-            cityName,
-            days,
-            tripType,
-            travelWithKids,
-            travelAlone,
-            travelWithPets,
-            budget
-        });
+        const roteiroData = {
+            dt_volta: returnDate,
+            dt_ida: departureDate,
+            nome_cidade: cityName,
+            tem_criancas: travelWithKids,
+            tipo_viagem: tripType,
+            viajando_sozinho: travelAlone,
+            tem_animal: travelWithPets,
+            valor_pessoa: budget,
+            obs_viagem: obsViagem
+        };
+    
+        const prompt = `Quero que voce me gere 5 roteiros de viagem para: ${cityName}. 
+                A viagem será do tipo ${tripType} e ocorrera entre os dias ${departureDate} e ${returnDate}. 
+                Estarei viajando ${travelAlone ? 'sozinho' : 'com companhia'}, 
+                ${travelWithKids ? 'com crianças' : 'sem crianças'}, 
+                ${travelWithPets ? 'com animais de estimação' : 'sem animais de estimação'}. 
+                Pretendo gastar até ${budget} por pessoa. E tenho as seguintes observacoes: ${obsViagem || 'sem observacoes'}`;
+    
+        console.log('Prompt montado:', prompt); // Adiciona este console.log para validar o prompt
+    
+        try {
+            const geminiResponse = await getGeminiResponse(prompt);
+            console.log('Resposta do Gemini:', geminiResponse);
+    
+            // Comentando ou removendo o salvamento no banco de dados
+            // const savedData = await saveData({ res_message: geminiResponse.text, dt_exeo: new Date().toISOString(), id_roteiro: null }, roteiroData);
+            // console.log('Dados salvos com sucesso:', savedData);
+    
+            // const logData = {
+            //     res_message: geminiResponse.text,
+            //     dt_exeo: new Date().toISOString(),
+            //     id_roteiro: savedData.roteiro.id
+            // };
+    
+            // await saveData(logData, roteiroData);
+            // console.log('Log salvo com sucesso');
+        } catch (error) {
+            console.error('Erro ao processar a requisição:', error);
+        }
     };
+
 
     return (
         <form onSubmit={handleSubmit}>
@@ -70,25 +106,23 @@ export default function Forms() {
                                 <div className="col-12">
                                     <InputText
                                         id="destino"
-
                                         value={cityName}
                                         onChange={(e) => setCityName(e.target.value)}
                                         required
                                     >
-
                                         Insira seu destino
                                     </InputText>
                                 </div>
                             </div>
                             <br></br>
-                            <div className="row">
+                                <div className="row">
                                 <div className="col-6">
-                                    <DatePicker id='dataPartida'>
+                                    <DatePicker id='dataPartida' value={departureDate} onChange={(e) => setDepartureDate(e.target.value)}>
                                         Quando você irá viajar?
                                     </DatePicker>
                                 </div>
                                 <div className="col-6">
-                                    <DatePicker id="dataVolta">
+                                    <DatePicker id="dataVolta" value={returnDate} onChange={(e) => setReturnDate(e.target.value)}>
                                         Quando você irá voltar?
                                     </DatePicker>
                                 </div>
@@ -116,29 +150,29 @@ export default function Forms() {
                                     <div className="checkbox-container ">
                                         <CheckBox
                                             id="viajandoComCrianca"
-                                            label="Estou viajando sozinho"
+                                            label="Estou viajando com criança"
                                             checked={travelWithKids}
-                                            onChange={(e) => setTravelWithKids(e.target.checked)}
+                                            onChange={(checked) => setTravelWithKids(checked)}
                                         />
-
+                                        
                                         <CheckBox
                                             id="viajandoSozinho"
-                                            label="Estou viajando com criança"
+                                            label="Estou viajando sozinho"
                                             checked={travelAlone}
-                                            onChange={(e) => setTravelAlone(e.target.checked)}
+                                            onChange={(checked) => setTravelAlone(checked)}
                                         />
+                                        
                                         <CheckBox
                                             id="viajandoComPets"
                                             label="Viajando com animais de estimação"
                                             checked={travelWithPets}
-                                            onChange={(e) => setTravelWithPets(e.target.checked)}
+                                            onChange={(checked) => setTravelWithPets(checked)}
                                         />
                                     </div>
                                 </div>
                             </div>
                         </div>
                     )}
-
 
                     {/* Step 3: Quanto você pretende gastar? */}
                     {step === 3 && (
@@ -157,7 +191,10 @@ export default function Forms() {
                             </div>
                             <div className="row">
                                 <div className="col-12">
-                                    <Observacao />
+                                    <Observacao
+                                        value={obsViagem}
+                                        onChange={(e) => setObsViagem(e.target.value)}
+                                    />
                                 </div>
                             </div>
                         </div>
