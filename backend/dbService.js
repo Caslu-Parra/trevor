@@ -32,14 +32,14 @@ async function getHistoricos() {
                                       log.dt_exeo, 
                                       log.id_roteiro, 
                                       rot.dt_volta, 
-                                      rot.nome_cidade, 
-                                      rot.nome_pais, 
-                                      rot.tem_criancas, 
+                                      rot.dt_ida,
+                                      rot.nome_destino, 
                                       rot.tipo_viagem, 
                                       rot.viajando_sozinho, 
                                       rot.tem_animal, 
                                       rot.valor_pessoa, 
-                                      rot.obs_viagem
+                                      rot.obs_viagem,
+                                      rot.tem_crianca
                                     FROM log_exeo log
                                     LEFT JOIN roteiros rot ON log.id_roteiro = rot.id`);
     return res.rows;
@@ -52,27 +52,31 @@ async function getHistoricos() {
 async function saveHistorico(logData, roteiroData) {
   try {
     await client.query('BEGIN');
-    const logQuery = 'INSERT INTO log_exeo (res_message, dt_exeo, id_roteiro) VALUES ($1, $2, $3) RETURNING *';
-    const logValues = [logData.res_message, logData.dt_exeo, logData.id_roteiro];
-    const logResult = await client.query(logQuery, logValues);
-
-    const roteiroQuery = `INSERT INTO roteiros (dt_volta, nome_cidade, nome_pais, tem_criancas, tipo_viagem, viajando_sozinho, tem_animal, valor_pessoa, obs_viagem) 
+    const roteiroQuery = `INSERT INTO roteiros (dt_ida, dt_volta, nome_destino, tipo_viagem, viajando_sozinho, tem_animal, valor_pessoa, obs_viagem, tem_crianca) 
                           VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING *`;
     const roteiroValues = [
+      roteiroData.dt_ida, 
       roteiroData.dt_volta, 
-      roteiroData.nome_cidade, 
-      roteiroData.nome_pais, 
-      roteiroData.tem_criancas, 
+      roteiroData.nome_destino, 
       roteiroData.tipo_viagem, 
       roteiroData.viajando_sozinho, 
       roteiroData.tem_animal, 
       roteiroData.valor_pessoa, 
-      roteiroData.obs_viagem
+      roteiroData.obs_viagem, 
+      roteiroData.tem_crianca
     ];
     const roteiroResult = await client.query(roteiroQuery, roteiroValues);
 
-    await client.query('COMMIT');
-    return { log: logResult.rows[0], roteiro: roteiroResult.rows[0] };
+    if (logData) {
+      const logQuery = 'INSERT INTO log_exeo (res_message, dt_exeo, id_roteiro) VALUES ($1, $2, $3) RETURNING *';
+      const logValues = [logData.res_message, logData.dt_exeo, roteiroResult.rows[0].id];
+      const logResult = await client.query(logQuery, logValues);
+      await client.query('COMMIT');
+      return { log: logResult.rows[0], roteiro: roteiroResult.rows[0] };
+    } else {
+      await client.query('COMMIT');
+      return { roteiro: roteiroResult.rows[0] };
+    }
   } catch (err) {
     await client.query('ROLLBACK');
     console.error('Erro ao salvar os dados', err);

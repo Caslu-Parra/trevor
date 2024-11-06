@@ -7,9 +7,8 @@ import React, { useState } from 'react';
 import Observacao from "./Observacao";
 import './DatePicker.css';
 import './CheckBox.css';
-import { saveData } from '../../endPoints/saveClient';
 import { getGeminiResponse } from '../../endPoints/geminiClient';
-import { saveLogData } from '../../endPoints/saveClient';
+import { saveLogData, saveData } from '../../endPoints/saveClient';
 
 
 export default function Forms() {
@@ -49,7 +48,7 @@ export default function Forms() {
 
     // Calcula a porcentagem do progresso
     const progressPercentage = ((step / 3) * 100).toFixed(2);
-    
+        
     const handleSubmit = async (event) => {
         event.preventDefault();
         const prompt = `Quero que voce me gere 5 roteiros de viagem para: ${cityName}. 
@@ -62,24 +61,42 @@ export default function Forms() {
         console.log('Prompt montado:', prompt); // Adiciona este console.log para validar o prompt
     
         try {
+            // Preparar os dados para salvar na tabela roteiros
+            const roteiroData = {
+                dt_ida: departureDate,
+                dt_volta: returnDate,
+                nome_destino: cityName,
+                tipo_viagem: tripType,
+                viajando_sozinho: travelAlone,
+                tem_animal: travelWithPets,
+                valor_pessoa: budget,
+                obs_viagem: obsViagem,
+                tem_crianca: travelWithKids
+            };
+    
+            // Salvar os dados na tabela roteiros
+            const savedRoteiro = await saveData(null, roteiroData);
+            console.log('Dados do roteiro salvos com sucesso:', savedRoteiro);
+    
+            // Obter a resposta do Gemini
             const geminiResponse = await getGeminiResponse(prompt);
             console.log('Resposta do Gemini:', geminiResponse);
     
-            // Preparar os dados para salvar no banco de dados
+            // Preparar os dados para salvar na tabela log_exeo
             const logData = {
                 res_message: geminiResponse.text,
                 dt_exeo: new Date().toISOString(),
-                id_roteiro: 3// Este valor será atualizado após salvar o roteiro
+                id_roteiro: savedRoteiro.roteiro.id // Usar o ID do roteiro salvo
             };
     
-            // Enviar os dados ao servidor
+            // Salvar os dados na tabela log_exeo
             const savedLogData = await saveLogData(logData);
             console.log('Log salvo com sucesso:', savedLogData);
         } catch (error) {
             console.error('Erro ao processar a requisição:', error);
         }
     };
-
+    
     return (
         <form onSubmit={handleSubmit}>
             <div className="form-group">
