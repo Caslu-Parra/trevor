@@ -80,8 +80,21 @@ async function saveHistorico(logData, roteiroData) {
   }
 }
 
+async function saveLog(logData) {
+  try {
+    const logQuery = 'INSERT INTO log_exeo (res_message, dt_exeo, id_roteiro) VALUES ($1, $2, $3) RETURNING *';
+    const logValues = [logData.res_message, logData.dt_exeo, logData.id_roteiro];
+    const logResult = await client.query(logQuery, logValues);
+    return logResult.rows[0];
+  } catch (err) {
+    console.error('Erro ao salvar o log', err);
+    throw err;
+  }
+}
+
 module.exports = {
   getData,
   getHistoricos,
-  saveHistorico
+  saveHistorico,
+  saveLog
 };

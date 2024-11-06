@@ -64,6 +64,17 @@ app.post('/save', async (req, res) => {
     }
 });
 
+app.post('/saveLog', async (req, res) => {
+    const logData = req.body; // Obtém os dados do corpo da requisição
+
+    try {
+        const savedLogData = await dbService.saveLog(logData);
+        res.json(savedLogData);
+    } catch (error) {
+        res.status(500).json({ error: 'Erro ao salvar o log' });
+    }
+});
+
 // Para qualquer outra rota, sirva o index.html do build do React
 app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, 'frontend/build', 'index.html'));

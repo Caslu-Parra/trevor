@@ -5,10 +5,12 @@ import ComboBox from "./ComboBox";
 import CheckBox from "./CheckBox";
 import React, { useState } from 'react';
 import Observacao from "./Observacao";
-import { saveData } from '../../endPoints/saveClient';
-import { getGeminiResponse } from '../../endPoints/geminiClient';
 import './DatePicker.css';
 import './CheckBox.css';
+import { saveData } from '../../endPoints/saveClient';
+import { getGeminiResponse } from '../../endPoints/geminiClient';
+import { saveLogData } from '../../endPoints/saveClient';
+
 
 export default function Forms() {
     const [step, setStep] = useState(1); // Controla qual pergunta está sendo exibida
@@ -21,7 +23,6 @@ export default function Forms() {
     const [travelWithPets, setTravelWithPets] = useState(false);
     const [budget, setBudget] = useState(5000);  // Estado para o range de dinheiro
     const [obsViagem, setObsViagem] = useState(''); // Estado para observações da viagem
-    const [countryName, setCountryName] = useState(''); // Estado para o nome do país
 
     const tripOptions = [
         "Paisagens Naturais",
@@ -48,21 +49,9 @@ export default function Forms() {
 
     // Calcula a porcentagem do progresso
     const progressPercentage = ((step / 3) * 100).toFixed(2);
-
+    
     const handleSubmit = async (event) => {
         event.preventDefault();
-        const roteiroData = {
-            dt_volta: returnDate,
-            dt_ida: departureDate,
-            nome_cidade: cityName,
-            tem_criancas: travelWithKids,
-            tipo_viagem: tripType,
-            viajando_sozinho: travelAlone,
-            tem_animal: travelWithPets,
-            valor_pessoa: budget,
-            obs_viagem: obsViagem
-        };
-    
         const prompt = `Quero que voce me gere 5 roteiros de viagem para: ${cityName}. 
                 A viagem será do tipo ${tripType} e ocorrera entre os dias ${departureDate} e ${returnDate}. 
                 Estarei viajando ${travelAlone ? 'sozinho' : 'com companhia'}, 
@@ -76,23 +65,20 @@ export default function Forms() {
             const geminiResponse = await getGeminiResponse(prompt);
             console.log('Resposta do Gemini:', geminiResponse);
     
-            // Comentando ou removendo o salvamento no banco de dados
-            // const savedData = await saveData({ res_message: geminiResponse.text, dt_exeo: new Date().toISOString(), id_roteiro: null }, roteiroData);
-            // console.log('Dados salvos com sucesso:', savedData);
+            // Preparar os dados para salvar no banco de dados
+            const logData = {
+                res_message: geminiResponse.text,
+                dt_exeo: new Date().toISOString(),
+                id_roteiro: 3// Este valor será atualizado após salvar o roteiro
+            };
     
-            // const logData = {
-            //     res_message: geminiResponse.text,
-            //     dt_exeo: new Date().toISOString(),
-            //     id_roteiro: savedData.roteiro.id
-            // };
-    
-            // await saveData(logData, roteiroData);
-            // console.log('Log salvo com sucesso');
+            // Enviar os dados ao servidor
+            const savedLogData = await saveLogData(logData);
+            console.log('Log salvo com sucesso:', savedLogData);
         } catch (error) {
             console.error('Erro ao processar a requisição:', error);
         }
     };
-
 
     return (
         <form onSubmit={handleSubmit}>
