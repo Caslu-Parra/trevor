@@ -7,16 +7,21 @@ import React, { useState } from 'react';
 import Observacao from "./Observacao";
 import './DatePicker.css';
 import './CheckBox.css';
+import { getGeminiResponse } from '../../endPoints/geminiClient';
+import { saveLogData, saveData } from '../../endPoints/saveClient';
+
 
 export default function Forms() {
     const [step, setStep] = useState(1); // Controla qual pergunta está sendo exibida
     const [cityName, setCityName] = useState('');
-    const [days, setDays] = useState('');
+    const [departureDate, setDepartureDate] = useState('');
+    const [returnDate, setReturnDate] = useState('');
     const [tripType, setTripType] = useState('');
     const [travelWithKids, setTravelWithKids] = useState(false);
     const [travelAlone, setTravelAlone] = useState(false);
     const [travelWithPets, setTravelWithPets] = useState(false);
     const [budget, setBudget] = useState(5000);  // Estado para o range de dinheiro
+    const [obsViagem, setObsViagem] = useState(''); // Estado para observações da viagem
 
     const tripOptions = [
         "Paisagens Naturais",
@@ -43,21 +48,55 @@ export default function Forms() {
 
     // Calcula a porcentagem do progresso
     const progressPercentage = ((step / 3) * 100).toFixed(2);
-
-
-    const handleSubmit = (event) => {
+        
+    const handleSubmit = async (event) => {
         event.preventDefault();
-        console.log({
-            cityName,
-            days,
-            tripType,
-            travelWithKids,
-            travelAlone,
-            travelWithPets,
-            budget
-        });
+        const prompt = `Quero que voce me gere 5 roteiros de viagem para: ${cityName}. 
+                A viagem será do tipo ${tripType} e ocorrera entre os dias ${departureDate} e ${returnDate}. 
+                Estarei viajando ${travelAlone ? 'sozinho' : 'com companhia'}, 
+                ${travelWithKids ? 'com crianças' : 'sem crianças'}, 
+                ${travelWithPets ? 'com animais de estimação' : 'sem animais de estimação'}. 
+                Pretendo gastar até ${budget} por pessoa. E tenho as seguintes observacoes: ${obsViagem || 'sem observacoes'}`;
+    
+        console.log('Prompt montado:', prompt); // Adiciona este console.log para validar o prompt
+    
+        try {
+            // Preparar os dados para salvar na tabela roteiros
+            const roteiroData = {
+                dt_ida: departureDate,
+                dt_volta: returnDate,
+                nome_destino: cityName,
+                tipo_viagem: tripType,
+                viajando_sozinho: travelAlone,
+                tem_animal: travelWithPets,
+                valor_pessoa: budget,
+                obs_viagem: obsViagem,
+                tem_crianca: travelWithKids
+            };
+    
+            // Salvar os dados na tabela roteiros
+            const savedRoteiro = await saveData(null, roteiroData);
+            console.log('Dados do roteiro salvos com sucesso:', savedRoteiro);
+    
+            // Obter a resposta do Gemini
+            const geminiResponse = await getGeminiResponse(prompt);
+            console.log('Resposta do Gemini:', geminiResponse);
+    
+            // Preparar os dados para salvar na tabela log_exeo
+            const logData = {
+                res_message: geminiResponse.text,
+                dt_exeo: new Date().toISOString(),
+                id_roteiro: savedRoteiro.roteiro.id // Usar o ID do roteiro salvo
+            };
+    
+            // Salvar os dados na tabela log_exeo
+            const savedLogData = await saveLogData(logData);
+            console.log('Log salvo com sucesso:', savedLogData);
+        } catch (error) {
+            console.error('Erro ao processar a requisição:', error);
+        }
     };
-
+    
     return (
         <form onSubmit={handleSubmit}>
             <div className="form-group">
@@ -70,25 +109,23 @@ export default function Forms() {
                                 <div className="col-12">
                                     <InputText
                                         id="destino"
-
                                         value={cityName}
                                         onChange={(e) => setCityName(e.target.value)}
                                         required
                                     >
-
                                         Insira seu destino
                                     </InputText>
                                 </div>
                             </div>
                             <br></br>
-                            <div className="row">
+                                <div className="row">
                                 <div className="col-6">
-                                    <DatePicker id='dataPartida'>
+                                    <DatePicker id='dataPartida' value={departureDate} onChange={(e) => setDepartureDate(e.target.value)}>
                                         Quando você irá viajar?
                                     </DatePicker>
                                 </div>
                                 <div className="col-6">
-                                    <DatePicker id="dataVolta">
+                                    <DatePicker id="dataVolta" value={returnDate} onChange={(e) => setReturnDate(e.target.value)}>
                                         Quando você irá voltar?
                                     </DatePicker>
                                 </div>
@@ -116,29 +153,29 @@ export default function Forms() {
                                     <div className="checkbox-container ">
                                         <CheckBox
                                             id="viajandoComCrianca"
-                                            label="Estou viajando sozinho"
+                                            label="Estou viajando com criança"
                                             checked={travelWithKids}
-                                            onChange={(e) => setTravelWithKids(e.target.checked)}
+                                            onChange={(checked) => setTravelWithKids(checked)}
                                         />
-
+                                        
                                         <CheckBox
                                             id="viajandoSozinho"
-                                            label="Estou viajando com criança"
+                                            label="Estou viajando sozinho"
                                             checked={travelAlone}
-                                            onChange={(e) => setTravelAlone(e.target.checked)}
+                                            onChange={(checked) => setTravelAlone(checked)}
                                         />
+                                        
                                         <CheckBox
                                             id="viajandoComPets"
                                             label="Viajando com animais de estimação"
                                             checked={travelWithPets}
-                                            onChange={(e) => setTravelWithPets(e.target.checked)}
+                                            onChange={(checked) => setTravelWithPets(checked)}
                                         />
                                     </div>
                                 </div>
                             </div>
                         </div>
                     )}
-
 
                     {/* Step 3: Quanto você pretende gastar? */}
                     {step === 3 && (
@@ -157,7 +194,10 @@ export default function Forms() {
                             </div>
                             <div className="row">
                                 <div className="col-12">
-                                    <Observacao />
+                                    <Observacao
+                                        value={obsViagem}
+                                        onChange={(e) => setObsViagem(e.target.value)}
+                                    />
                                 </div>
                             </div>
                         </div>

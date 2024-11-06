@@ -5,9 +5,14 @@ import Chat from './componentes/right/chat';
 import Message from './componentes/right/message';
 import Forms from './componentes/form/forms';
 import Modal from './componentes/form/modal';
+//endpoints
+import DataComponent from './endPoints/dataClient';
+import HistoricosComponent from './endPoints/historicoClient';
+// import ChatbotComponent from './endPoints/geminiClient';
 
 const root = createRoot(document.getElementById('main'));
 root.render(
+    <div>
     <div class="row g-0">
         <Historico>
             <Roteiro title='Lisboa - 13 dias' img='https://bootdey.com/img/Content/avatar/avatar5.png' data='2024-06-12 07:10:56' />
@@ -20,5 +25,11 @@ root.render(
         <Modal>
             <Forms/>
         </Modal>
+    </div>
+    {/* provisorio para testes */}
+    <hr></hr>
+    {/* <ChatbotComponent/> */}
+    <DataComponent/>
+    <HistoricosComponent/>
     </div>
 );
