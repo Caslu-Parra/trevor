@@ -7,8 +7,8 @@ import Message from './componentes/right/message';
 import Forms from './componentes/form/forms';
 import Modal from './componentes/form/modal';
 //endpoints
-import DataComponent from './endPoints/dataClient';
-import HistoricosComponent from './endPoints/roteiroClient';
+import DataComponent from './componentes/DataComponent';
+import HistoricosComponent from './componentes/HistoricosComponent';
 // import ChatbotComponent from './endPoints/geminiClient';
 
 function App() {

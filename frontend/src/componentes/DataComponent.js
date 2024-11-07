@@ -1,13 +1,14 @@
+// DataComponent.js
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import { fetchHistoricos } from '../endPoints/historicoClient';
 
 function DataComponent() {
   const [data, setData] = useState([]);
 
   useEffect(() => {
-    axios.get('/historicos')
-      .then(response => {
-        setData(response.data);
+    fetchHistoricos()
+      .then(responseData => {
+        setData(responseData);
       })
       .catch(error => {
         console.error('Erro ao buscar dados:', error);
