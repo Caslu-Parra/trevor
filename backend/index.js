@@ -16,66 +16,49 @@ app.listen(port, () => console.log(`Executando na porta: ${port}`));
 // Servir arquivos estáticos do build do React
 app.use(express.static(path.join(__dirname, 'frontend/build')));
 
-app.get('/hello-world', (req, res) => {
-    res.send({ 'msg': 'Hello world' });
-});
-
-app.get('/data', async (req, res) => {
-    try {
-        const data = await dbService.getData();
-        res.json(data);
-    } catch (error) {
-        res.status(500).json({ error: 'Erro ao se concetar ao servidor SQL' });
-    }
-});
+app.get('/teste', (req, res) => res.json({ 'msg': 'hello world' }));
 
 app.get('/historicos', async (req, res) => {
     try {
-        const data = await dbService.getHistoricos();
-        res.json(data);
-    } catch (error) {
-        res.status(500).json({ error: 'Erro ao se concetar ao servidor SQL' });
-    }
+        const historico = await dbService.obterHistoricos();
+        res.status(200).json(historico);
+    } catch (error) { res.status(500).json({ 'err_msg': error }); }
 });
 
-app.post('/chatbot', async (req, res) => { // Alterado para POST
-    const { text } = req.body; // Obtém a pergunta do corpo da requisição
-    const genAI = new GoogleGenerativeAI(process.env.GEMINI_KEY);
-
+app.get('/roteiros/:id_historico', async (req, res) => {
     try {
+        const roteiro = await dbService.obterRoteiro(req.params.id_historico)
+        res.status(200).json(roteiro);
+    } catch (error) { res.status(500).json({ 'err_msg': error }); }
+});
+
+app.post('/roteiros/gerar', async (req, res) => {
+    try {
+        const { text } = req.body;
+        const genAI = new GoogleGenerativeAI(process.env.GEMINI_KEY);
         const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
         const result = await model.generateContent(text);
         const response = await result.response;
         const generatedText = response.text();
         res.json({ text: generatedText });
-    } catch (error) {
-        res.status(500).json({ error: 'Erro ao se conectar ao chatbot' });
-    }
+    } catch (error) { res.status(500).json({ 'err_msg': error }); }
 });
 
-app.post('/save', async (req, res) => {
-    const { logData, roteiroData } = req.body; // Obtém os dados do corpo da requisição
-
+app.post('/roteiros/salvar', async (req, res) => {
     try {
-        const savedData = await dbService.saveHistorico(logData, roteiroData);
-        res.json(savedData);
-    } catch (error) {
-        res.status(500).json({ error: 'Erro ao salvar os dados' });
-    }
+        const { roteiro } = req.body; // Obtém os dados do corpo da requisição
+        const savedLogData = await dbService.salvarRoteiro(roteiro);
+        res.status(201).json(savedLogData);
+    } catch (error) { res.status(500).json({ 'err_msg': error }); }
 });
 
-app.post('/saveLog', async (req, res) => {
-    const logData = req.body; // Obtém os dados do corpo da requisição
-
+app.post('/historicos/salvar', async (req, res) => {
     try {
-        const savedLogData = await dbService.saveLog(logData);
-        res.json(savedLogData);
-    } catch (error) {
-        res.status(500).json({ error: 'Erro ao salvar o log' });
-    }
+        const { form } = req.body; // Obtém os dados do corpo da requisição
+        const savedData = await dbService.salvarHistorico(form);
+        res.status(201).json(savedData);
+    } catch (error) { res.status(500).json({ 'err_msg': error }); }
 });
 
 // Para qualquer outra rota, sirva o index.html do build do React
-app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, 'frontend/build', 'index.html'));
-});
+app.get('*', (req, res) => res.sendFile(path.join(__dirname, 'frontend/build', 'index.html')));
