@@ -7,7 +7,7 @@ import Forms from './componentes/form/forms';
 import Modal from './componentes/form/modal';
 //endpoints
 import DataComponent from './endPoints/dataClient';
-import HistoricosComponent from './endPoints/historicoClient';
+import HistoricosComponent from './endPoints/roteiroClient';
 // import ChatbotComponent from './endPoints/geminiClient';
 
 const root = createRoot(document.getElementById('main'));

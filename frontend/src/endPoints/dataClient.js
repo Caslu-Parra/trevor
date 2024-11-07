@@ -5,7 +5,7 @@ function DataComponent() {
   const [data, setData] = useState([]);
 
   useEffect(() => {
-    axios.get('/data')
+    axios.get('/historicos')
       .then(response => {
         setData(response.data);
       })
@@ -22,24 +22,6 @@ function DataComponent() {
 
   // Pegar res_message quando id_exeo for 6
   const resMessageIdExeo6 = data.find(item => item.id_exeo === 6)?.res_message || 'Não encontrado';
-
-  // // Pegar id_roteiro de todos os objetos
-  // const idRoteiros = data.map(function(item) {
-  //   return item.id_roteiro;
-  // });
-  
-  // // Pegar id_roteiro de um objeto específico (por exemplo, o primeiro objeto)
-  // const idRoteiroPrimeiroObjeto = data.length > 0 ? data[0].id_roteiro : null;
-  
-  // // Pegar res_message quando id_exeo for 6
-  // const resMessageIdExeo6 = (function() {
-  //   for (var i = 0; i < data.length; i++) {
-  //     if (data[i].id_exeo === 6) {
-  //       return data[i].res_message;
-  //     }
-  //   }
-  //   return 'Não encontrado';
-  // })();
 
   return (
     <div>
