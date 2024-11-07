@@ -34,8 +34,9 @@ async function obterRoteiro(id_historico) {
 
 async function salvarRoteiro(roteiro) {
   try {
-    const query = 'INSERT INTO log_roteiros (res_message, dt_exeo, id_historico) VALUES ($1, $2, $3) RETURNING *';
+    const query = 'INSERT INTO log_roteiro (res_message, dt_exeo, id_historico) VALUES ($1, $2, $3) RETURNING *';
     const valores = [roteiro.msg, roteiro.dt_exeo, roteiro.id_historico];
+
     const sqlResult = await client.query(query, valores);
     return sqlResult.rows[0];
   } catch (err) { throw err; }
