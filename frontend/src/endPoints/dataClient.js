@@ -14,28 +14,28 @@ function DataComponent() {
       });
   }, []);
 
-  // Pegar id_roteiro de todos os objetos
-  const idRoteiros = data.map(item => item.id_roteiro);
+  // Pegar id_historico de todos os objetos
+  const idHistoricos = data.map(item => item.id_historico);
 
-  // Pegar id_roteiro de um objeto específico (por exemplo, o primeiro objeto)
-  const idRoteiroPrimeiroObjeto = data.length > 0 ? data[0].id_roteiro : null;
+  // Pegar id_historico de um objeto específico (por exemplo, o primeiro objeto)
+  const idHistoricoPrimeiroObjeto = data.length > 0 ? data[0].id_historico : null;
 
-  // Pegar res_message quando id_exeo for 6
-  const resMessageIdExeo6 = data.find(item => item.id_exeo === 6)?.res_message || 'Não encontrado';
+  // Pegar nome_destino quando id_exeo for 6
+  const nomeDestinoIdExeo6 = data.find(item => item.id_exeo === 6)?.nome_destino || 'Não encontrado';
 
   return (
     <div>
-      <h2>Data</h2>
+      <h2>Left</h2>
       <pre>{JSON.stringify(data, null, 2)}</pre>
 
-      <h3>id_roteiro de todos os objetos</h3>
-      <pre>{JSON.stringify(idRoteiros, null, 2)}</pre>
+      <h3>id_historico de todos os objetos</h3>
+      <pre>{JSON.stringify(idHistoricos, null, 2)}</pre>
 
-      <h3>id_roteiro do primeiro objeto</h3>
-      <pre>{JSON.stringify(idRoteiroPrimeiroObjeto, null, 2)}</pre>
+      <h3>id_historico do primeiro objeto</h3>
+      <pre>{JSON.stringify(idHistoricoPrimeiroObjeto, null, 2)}</pre>
 
-      <h3>res_message quando id_exeo for 6</h3>
-      <pre>{JSON.stringify(resMessageIdExeo6, null, 2)}</pre>
+      <h3>nome_destino quando id_exeo for 6</h3>
+      <pre>{JSON.stringify(nomeDestinoIdExeo6, null, 2)}</pre>
     </div>
   );
 }

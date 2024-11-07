@@ -14,6 +14,7 @@ import HistoricosComponent from './endPoints/roteiroClient';
 function App() {
     const [formData, setFormData] = useState(null);
     const [geminiResponse, setGeminiResponse] = useState(null);
+    const [idHistorico, setIdHistorico] = useState(17);
 
     const handleFormSubmit = ({ formData, geminiResponse }) => {
         setFormData(formData);
@@ -39,7 +40,7 @@ function App() {
             <hr></hr>
             {/* <ChatbotComponent/> */}
             <DataComponent/>
-            <HistoricosComponent/>
+            <HistoricosComponent idHistorico={idHistorico} />
         </div>
     );
 }

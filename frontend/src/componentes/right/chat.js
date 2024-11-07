@@ -4,6 +4,7 @@ import React, { useRef } from 'react';
 import { Toast } from 'primereact/toast';
 import trevorImg from '../../img/trevor-02.png';
 import './speedDial.css';
+import { saveRoteiro, saveHistorico } from '../../endPoints/saveClient';
 
 export default function Chat({ formData, geminiResponse, children }) {
     const toast = useRef(null);
@@ -11,8 +12,35 @@ export default function Chat({ formData, geminiResponse, children }) {
         {
             label: 'Salvar',
             icon: 'pi pi-save custom-icon',
-            command: () => {
-                toast.current.show({ severity: 'info', summary: 'Salvar', detail: 'Roteiros salvos!' });
+            command: async () => {
+                try {
+                    // Salvar histórico
+                    const historicoData = {
+                        dt_ida: formData.departureDate,
+                        dt_volta: formData.returnDate,
+                        nome_destino: formData.cityName,
+                        tipo_viagem: formData.tripType,
+                        viajando_sozinho: formData.travelAlone,
+                        tem_animal: formData.travelWithPets,
+                        valor_pessoa: formData.budget,
+                        obs_viagem: formData.obsViagem,
+                        tem_crianca: formData.travelWithKids
+                    };
+                    const savedHistorico = await saveHistorico(historicoData);
+
+                    // Salvar roteiro
+                    const roteiroData = {
+                        msg: geminiResponse,
+                        dt_exeo: new Date().toISOString(),
+                        id_historico: savedHistorico.id
+                    };
+                    await saveRoteiro(roteiroData);
+
+                    toast.current.show({ severity: 'info', summary: 'Salvar', detail: 'Roteiros salvos!' });
+                } catch (error) {
+                    toast.current.show({ severity: 'error', summary: 'Erro', detail: 'Erro ao salvar os dados!' });
+                    console.error('Erro ao salvar os dados:', error);
+                }
             }
         },
         {

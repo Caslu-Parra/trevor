@@ -1,18 +1,20 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 
-function HistoricosComponent() {
+function HistoricosComponent({ idHistorico }) {
   const [historicos, setHistoricos] = useState([]);
 
   useEffect(() => {
-    axios.get('/roteiros/17')
-      .then(response => {
-        setHistoricos(response.data);
-      })
-      .catch(error => {
-        console.error('Erro ao buscar históricos:', error);
-      });
-  }, []);
+    if (idHistorico) {
+      axios.get(`/roteiros/${idHistorico}`)
+        .then(response => {
+          setHistoricos(response.data);
+        })
+        .catch(error => {
+          console.error('Erro ao buscar históricos:', error);
+        });
+    }
+  }, [idHistorico]);
 
   return (
     <div>
