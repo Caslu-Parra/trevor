@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-export async function fetchHistoricos() {
+export async function obterHistoricos() {
   try {
     const response = await axios.get('/historicos');
     return response.data;

@@ -1,13 +1,13 @@
 // HistoricosComponent.js
 import React, { useEffect, useState } from 'react';
-import { fetchRoteiros } from '../endPoints/roteiroClient';
+import { obterRoteiros } from '../endPoints/roteiroClient';
 
 function HistoricosComponent({ idHistorico }) {
   const [historicos, setHistoricos] = useState([]);
 
   useEffect(() => {
     if (idHistorico) {
-      fetchRoteiros(idHistorico)
+      obterRoteiros(idHistorico)
         .then(responseData => {
           setHistoricos(responseData);
         })

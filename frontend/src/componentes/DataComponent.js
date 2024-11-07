@@ -1,12 +1,12 @@
 // DataComponent.js
 import React, { useEffect, useState } from 'react';
-import { fetchHistoricos } from '../endPoints/historicoClient';
+import { obterHistoricos } from '../endPoints/historicoClient';
 
 function DataComponent() {
   const [data, setData] = useState([]);
 
   useEffect(() => {
-    fetchHistoricos()
+    obterHistoricos()
       .then(responseData => {
         setData(responseData);
       })
