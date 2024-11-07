@@ -1,35 +1,83 @@
 import { createRoot } from 'react-dom/client';
-import Historico from './componentes/left/historico'
-import Roteiro from './componentes/left/roteiro'
+import React, { useEffect, useState } from 'react';
+import Historico from './componentes/left/historico';
+import Roteiro from './componentes/left/roteiro';
 import Chat from './componentes/right/chat';
 import Message from './componentes/right/message';
 import Forms from './componentes/form/forms';
 import Modal from './componentes/form/modal';
-//endpoints
 import DataComponent from './endPoints/dataClient';
-import HistoricosComponent from './endPoints/historicoClient';
-// import ChatbotComponent from './endPoints/geminiClient';
 
-const root = createRoot(document.getElementById('main'));
-root.render(
+const App = () => {
+  const [historicos, setHistoricos] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [selectedRoteiro, setSelectedRoteiro] = useState(null);
+
+  useEffect(() => {
+    async function fetchHistoricos() {
+      try {
+        const response = await fetch('/historicos');
+        const data = await response.json();
+
+        // Ordenar os históricos pela data de execução (mais recentes primeiro)
+        const sortedHistoricos = data.sort((a, b) => new Date(b.dt_exeo) - new Date(a.dt_exeo));
+        setHistoricos(sortedHistoricos);
+        setLoading(false);
+      } catch (error) {
+        console.error('Erro ao buscar os históricos:', error);
+        setLoading(false);
+      }
+    }
+    fetchHistoricos();
+  }, []);
+
+  const handleRoteiroClick = (roteiro) => {
+    setSelectedRoteiro(roteiro);
+  };
+
+  if (loading) {
+    return <div>Carregando...</div>;
+  }
+
+  return (
     <div>
-    <div class="row g-0">
+      <div className="row g-0">
         <Historico>
-            <Roteiro title='Lisboa - 13 dias' img='https://bootdey.com/img/Content/avatar/avatar5.png' data='2024-06-12 07:10:56' />
-            <Roteiro title='Paris, Barcelona - 20 dias' img='https://bootdey.com/img/Content/avatar/avatar2.png' data='2024-07-11 09:20:15' />
-            <Roteiro title='Orlando, Miami, Tampa - 10 dias' img='https://bootdey.com/img/Content/avatar/avatar3.png' data='2023-10-01 15:35:37' />
+          {historicos.map((historico, index) => {
+            // Formatar a data de execução para PT-BR
+            const formattedDate = new Date(historico.dt_exeo).toLocaleString('pt-BR', {
+              day: '2-digit',
+              month: '2-digit',
+              year: 'numeric',
+              hour: '2-digit',
+              minute: '2-digit',
+            });
+
+            return (
+              <Roteiro
+                key={index}
+                title={`${historico.nome_destino}`}
+                img='https://bootdey.com/img/Content/avatar/avatar5.png'
+                data={formattedDate}  // Passando a data formatada
+                onClick={() => handleRoteiroClick(historico)}
+              />
+            );
+          })}
         </Historico>
-        <Chat>
-        <Message dtEnvio='2024-06-12 14:49:12' owner='trevor'>Olá, eu sou o Trevor, seu assistente de viagem personalizado e vou te ajudar a ter um roteiro de viagem inesquecível. Preencha o formulário para que eu crie seu roteiro!</Message>
+        <Chat selectedRoteiro={selectedRoteiro}>
+          <Message dtEnvio="2024-06-12 14:49:12" owner="trevor">
+            Olá, eu sou o Trevor, seu assistente de viagem personalizado e vou te ajudar a ter um roteiro de viagem inesquecível. Preencha o formulário para que eu crie seu roteiro!
+          </Message>
         </Chat>
         <Modal>
-            <Forms/>
+          <Forms />
         </Modal>
+      </div>
+      <hr />
+      <DataComponent />
     </div>
-    {/* provisorio para testes */}
-    <hr></hr>
-    {/* <ChatbotComponent/> */}
-    <DataComponent/>
-    <HistoricosComponent/>
-    </div>
-);
+  );
+};
+
+const root = createRoot(document.getElementById('main'));
+root.render(<App />);
