@@ -4,49 +4,15 @@ import React, { useRef } from 'react';
 import { Toast } from 'primereact/toast';
 import trevorImg from '../../img/trevor-02.png';
 import './speedDial.css';
-import { saveRoteiro, saveHistorico } from '../../endPoints/saveClient';
 
-export default function Chat(props) {
+export default function Chat({ formData, geminiResponse, children }) {
     const toast = useRef(null);
     const items = [
         {
             label: 'Salvar',
             icon: 'pi pi-save custom-icon',
-            command: async () => {
-                try {
-                    // Coletar todas as informações do formulário em uma variável local
-                    const formData = {
-                        cityName: props.cityName,
-                        departureDate: props.departureDate,
-                        returnDate: props.returnDate,
-                        tripType: props.tripType,
-                        travelWithKids: props.travelWithKids,
-                        travelAlone: props.travelAlone,
-                        travelWithPets: props.travelWithPets,
-                        budget: props.budget,
-                        obsViagem: props.obsViagem
-                    };
-
-                    // Salvar os dados na tabela historico
-                    const savedHistorico = await saveHistorico(formData);
-                    console.log('Dados do histórico salvos com sucesso:', savedHistorico);
-
-                    // Preparar os dados para salvar na tabela log_roteiros
-                    const logData = {
-                        res_message: props.geminiResponse,
-                        dt_exeo: new Date().toISOString(),
-                        id_historico: savedHistorico.id // Usar o ID do histórico salvo
-                    };
-
-                    // Salvar os dados na tabela log_roteiros
-                    const savedLogData = await saveRoteiro(logData);
-                    console.log('Log salvo com sucesso:', savedLogData);
-
-                    toast.current.show({ severity: 'info', summary: 'Salvar', detail: 'Roteiros salvos!' });
-                } catch (error) {
-                    console.error('Erro ao salvar os dados:', error);
-                    toast.current.show({ severity: 'error', summary: 'Erro', detail: 'Erro ao salvar os roteiros!' });
-                }
+            command: () => {
+                toast.current.show({ severity: 'info', summary: 'Salvar', detail: 'Roteiros salvos!' });
             }
         },
         {
@@ -70,9 +36,7 @@ export default function Chat(props) {
                     </div>
                 </div>
             </div>
-            <div>
-            </div>
-            {props.children}
+            {children}
             <div style={{ position: 'relative', height: '150px' }}>
                 <Toast ref={toast} />
                 <div style={{

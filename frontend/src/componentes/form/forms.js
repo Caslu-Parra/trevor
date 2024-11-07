@@ -10,7 +10,7 @@ import './CheckBox.css';
 import { getGeminiResponse } from '../../endPoints/geminiClient';
 import { saveRoteiro, saveHistorico } from '../../endPoints/saveClient';
 
-export default function Forms() {
+export default function Forms({ onFormSubmit }) {
     const [step, setStep] = useState(1); // Controla qual pergunta está sendo exibida
     const [cityName, setCityName] = useState('');
     const [departureDate, setDepartureDate] = useState('');
@@ -81,6 +81,9 @@ export default function Forms() {
             // Exibir as informações coletadas e a resposta do Gemini no console
             console.log('Informações do formulário:', formData);
             console.log('Resposta do Gemini:', geminiResponse.text);
+
+            // Passar as informações para o componente pai
+            onFormSubmit({ formData, geminiResponse: geminiResponse.text });
         } catch (error) {
             console.error('Erro ao processar a requisição:', error);
         }
