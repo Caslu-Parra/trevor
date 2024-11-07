@@ -1,10 +1,8 @@
-import React, { useState } from "react";
+import React from "react";
 import { InputTextarea } from "primereact/inputtextarea";
 import './Observacao.css'; // Importe seu arquivo CSS se necessário
 
-export default function AutoResizeDemo() {
-    const [value, setValue] = useState('');
-
+export default function Observacao({ value, onChange }) {
     return (
         <div>
             <label htmlFor="observacao">Observações:</label>
@@ -12,7 +10,7 @@ export default function AutoResizeDemo() {
                 <InputTextarea
                     autoResize
                     value={value}
-                    onChange={(e) => setValue(e.target.value)}
+                    onChange={onChange}
                     rows={5}
                     cols={30}
                     placeholder="Digite suas observações aqui"
