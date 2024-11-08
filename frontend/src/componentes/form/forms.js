@@ -1,17 +1,16 @@
+import React, { useState } from 'react';
 import DatePicker from "./DatePicker";
 import InputText from "./InputText";
 import Range from "./range";
 import ComboBox from "./ComboBox";
 import CheckBox from "./CheckBox";
-import React, { useState } from 'react';
 import Observacao from "./Observacao";
 import './DatePicker.css';
 import './CheckBox.css';
 import { getGeminiResponse } from '../../endPoints/geminiClient';
-import { saveLogData, saveData } from '../../endPoints/saveClient';
+import { saveRoteiro, saveHistorico } from '../../endPoints/saveClient';
 
-
-export default function Forms() {
+export default function Forms({ onFormSubmit }) {
     const [step, setStep] = useState(1); // Controla qual pergunta está sendo exibida
     const [cityName, setCityName] = useState('');
     const [departureDate, setDepartureDate] = useState('');
@@ -51,47 +50,40 @@ export default function Forms() {
         
     const handleSubmit = async (event) => {
         event.preventDefault();
-        const prompt = `Quero que voce me gere 5 roteiros de viagem para: ${cityName}. 
-                A viagem será do tipo ${tripType} e ocorrera entre os dias ${departureDate} e ${returnDate}. 
-                Estarei viajando ${travelAlone ? 'sozinho' : 'com companhia'}, 
-                ${travelWithKids ? 'com crianças' : 'sem crianças'}, 
-                ${travelWithPets ? 'com animais de estimação' : 'sem animais de estimação'}. 
-                Pretendo gastar até ${budget} por pessoa. E tenho as seguintes observacoes: ${obsViagem || 'sem observacoes'}`;
+
+        // Coletar todas as informações do formulário em uma variável local
+        const formData = {
+            cityName,
+            departureDate,
+            returnDate,
+            tripType,
+            travelWithKids,
+            travelAlone,
+            travelWithPets,
+            budget,
+            obsViagem
+        };
+
+        const prompt = `Quero que voce me gere 5 roteiros de viagem para: ${formData.cityName}. 
+                A viagem será do tipo ${formData.tripType} e ocorrera entre os dias ${formData.departureDate} e ${formData.returnDate}. 
+                Estarei viajando ${formData.travelAlone ? 'sozinho' : 'com companhia'}, 
+                ${formData.travelWithKids ? 'com crianças' : 'sem crianças'}, 
+                ${formData.travelWithPets ? 'com animais de estimação' : 'sem animais de estimação'}. 
+                Pretendo gastar até ${formData.budget} por pessoa. E tenho as seguintes observacoes: ${formData.obsViagem || 'sem observacoes'}`;
     
         console.log('Prompt montado:', prompt); // Adiciona este console.log para validar o prompt
     
         try {
-            // Preparar os dados para salvar na tabela roteiros
-            const roteiroData = {
-                dt_ida: departureDate,
-                dt_volta: returnDate,
-                nome_destino: cityName,
-                tipo_viagem: tripType,
-                viajando_sozinho: travelAlone,
-                tem_animal: travelWithPets,
-                valor_pessoa: budget,
-                obs_viagem: obsViagem,
-                tem_crianca: travelWithKids
-            };
-    
-            // Salvar os dados na tabela roteiros
-            const savedRoteiro = await saveData(null, roteiroData);
-            console.log('Dados do roteiro salvos com sucesso:', savedRoteiro);
-    
-            // Obter a resposta do Gemini
+            // Obter a resposta do Gemini em uma variável local
             const geminiResponse = await getGeminiResponse(prompt);
             console.log('Resposta do Gemini:', geminiResponse);
-    
-            // Preparar os dados para salvar na tabela log_exeo
-            const logData = {
-                res_message: geminiResponse.text,
-                dt_exeo: new Date().toISOString(),
-                id_roteiro: savedRoteiro.roteiro.id // Usar o ID do roteiro salvo
-            };
-    
-            // Salvar os dados na tabela log_exeo
-            const savedLogData = await saveLogData(logData);
-            console.log('Log salvo com sucesso:', savedLogData);
+
+            // Exibir as informações coletadas e a resposta do Gemini no console
+            console.log('Informações do formulário:', formData);
+            console.log('Resposta do Gemini:', geminiResponse.text);
+
+            // Passar as informações para o componente pai
+            onFormSubmit({ formData, geminiResponse: geminiResponse.text });
         } catch (error) {
             console.error('Erro ao processar a requisição:', error);
         }

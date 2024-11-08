@@ -20,16 +20,20 @@ async function obterHistoricos() {
     const sqlResult = await client.query(`SELECT rot.id_exeo, rot.dt_exeo, rot.id_historico, hst.nome_destino
                                             FROM log_roteiro rot LEFT JOIN historico hst ON rot.id_historico = hst.id`);
     return sqlResult.rows;
-  } catch (err) { throw err; }
+  } catch (err) {
+    throw err;
+  }
 }
 
 async function obterRoteiro(id_historico) {
   try {
     const sqlResult = await client.query(`SELECT rot.id_exeo, rot.res_message, rot.id_historico, hst.nome_destino
                                             FROM log_roteiro rot LEFT JOIN historico hst ON rot.id_historico = hst.id
-                                            WHERE rot.id_historico = ${id_historico}`);
+                                            WHERE rot.id_historico = $1`, [id_historico]);
     return sqlResult.rows;
-  } catch (err) { throw err; }
+  } catch (err) {
+    throw err;
+  }
 }
 
 async function salvarRoteiro(roteiro) {
@@ -39,7 +43,9 @@ async function salvarRoteiro(roteiro) {
 
     const sqlResult = await client.query(query, valores);
     return sqlResult.rows[0];
-  } catch (err) { throw err; }
+  } catch (err) {
+    throw err;
+  }
 }
 
 async function salvarHistorico(form) {
@@ -60,6 +66,7 @@ async function salvarHistorico(form) {
       form.tem_crianca
     ];
     const sqlResult = await client.query(query, valores);
+    await client.query('COMMIT');
     return sqlResult.rows[0];
 
   } catch (err) {
@@ -69,5 +76,8 @@ async function salvarHistorico(form) {
 }
 
 module.exports = {
-  obterHistoricos: obterHistoricos, obterRoteiro: obterRoteiro, salvarRoteiro, salvarHistorico
+  obterHistoricos,
+  obterRoteiro,
+  salvarRoteiro,
+  salvarHistorico
 };

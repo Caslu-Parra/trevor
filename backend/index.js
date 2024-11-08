@@ -22,14 +22,18 @@ app.get('/historicos', async (req, res) => {
     try {
         const historico = await dbService.obterHistoricos();
         res.status(200).json(historico);
-    } catch (error) { res.status(500).json({ err_msg: `${error}` }); }
+    } catch (error) {
+        res.status(500).json({ err_msg: `${error}` });
+    }
 });
 
 app.get('/roteiros/:id_historico', async (req, res) => {
     try {
-        const roteiro = await dbService.obterRoteiro(req.params.id_historico)
+        const roteiro = await dbService.obterRoteiro(req.params.id_historico);
         res.status(200).json(roteiro);
-    } catch (error) { res.status(500).json({ err_msg: `${error}` }); }
+    } catch (error) {
+        res.status(500).json({ err_msg: `${error}` });
+    }
 });
 
 app.post('/roteiros/gerar', async (req, res) => {
@@ -41,21 +45,27 @@ app.post('/roteiros/gerar', async (req, res) => {
         const response = await result.response;
         const generatedText = response.text();
         res.json({ text: generatedText });
-    } catch (error) { res.status(500).json({ err_msg: `${error.errorDetails[0].reason}` }); }
+    } catch (error) {
+        res.status(500).json({ err_msg: `${error.errorDetails[0].reason}` });
+    }
 });
 
 app.post('/roteiros/salvar', async (req, res) => {
     try {
         const savedLogData = await dbService.salvarRoteiro(req.body);
         res.status(201).json(savedLogData);
-    } catch (error) { res.status(500).json({ err_msg: `${error}` }); }
+    } catch (error) {
+        res.status(500).json({ err_msg: `${error}` });
+    }
 });
 
 app.post('/historicos/salvar', async (req, res) => {
     try {
         const savedData = await dbService.salvarHistorico(req.body);
         res.status(201).json(savedData);
-    } catch (error) { res.status(500).json({ err_msg: `${error}` }); }
+    } catch (error) {
+        res.status(500).json({ err_msg: `${error}` });
+    }
 });
 
 // Para qualquer outra rota, sirva o index.html do build do React

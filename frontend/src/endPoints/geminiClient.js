@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 export async function getGeminiResponse(prompt) {
-  const url = '/chatbot';
+  const url = '/roteiros/gerar';
   try {
     console.log('URL da requisição ao Gemini:', url);
     const res = await axios.post(url, { text: prompt });
