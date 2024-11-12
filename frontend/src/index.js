@@ -45,26 +45,32 @@ const App = () => {
     <div>
       <div className="row g-0">
         <Historico>
-          {historicos.map((historico, index) => {
-            // Formatar a data de execução para PT-BR
-            const formattedDate = new Date(historico.dt_exeo).toLocaleString('pt-BR', {
-              day: '2-digit',
-              month: '2-digit',
-              year: 'numeric',
-              hour: '2-digit',
-              minute: '2-digit',
-            });
+          <div 
+            style={{
+              maxHeight: '300px',    // Altura fixa do container
+              overflowY: 'auto',     // Permite rolagem vertical
+            }}
+          >
+            {historicos.map((historico, index) => {
+              const formattedDate = new Date(historico.dt_exeo).toLocaleString('pt-BR', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+              });
 
-            return (
-              <Roteiro
-                key={index}
-                title={`${historico.nome_destino}`}
+              return (
+                <Roteiro
+                  key={index}
+                  title={`${historico.nome_destino}`}
                 img='https://bootdey.com/img/Content/avatar/avatar5.png'
                 data={formattedDate}  // Passando a data formatada
-                onClick={() => handleRoteiroClick(historico)}
-              />
-            );
-          })}
+                  onClick={() => handleRoteiroClick(historico)}
+                />
+              );
+            })}
+          </div>
         </Historico>
         <Chat selectedRoteiro={selectedRoteiro}>
           <Message dtEnvio="2024-06-12 14:49:12" owner="trevor">
