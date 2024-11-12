@@ -1,21 +1,31 @@
 import axios from 'axios';
 
-export async function saveData(logData, roteiroData) {
+/**
+ * Função para salvar o histórico no servidor.
+ * @param {Object} historicoData - Dados do histórico a serem salvos.
+ * @returns {Object} - Dados do histórico salvo.
+ */
+export async function saveHistorico(historicoData) {
   try {
-    const res = await axios.post('/save', { logData, roteiroData });
-    return res.data;
+    const response = await axios.post('/historicos/salvar', historicoData);
+    return response.data;
   } catch (error) {
-    console.error('Erro ao salvar os dados:', error);
+    console.error('Erro ao salvar o histórico:', error);
     throw error;
   }
 }
 
-export async function saveLogData(logData) {
+/**
+ * Função para salvar o roteiro no servidor.
+ * @param {Object} roteiroData - Dados do roteiro a serem salvos.
+ * @returns {Object} - Dados do roteiro salvo.
+ */
+export async function saveRoteiro(roteiroData) {
   try {
-    const res = await axios.post('/saveLog', logData);
-    return res.data;
+    const response = await axios.post('/roteiros/salvar', roteiroData);
+    return response.data;
   } catch (error) {
-    console.error('Erro ao salvar o log:', error);
+    console.error('Erro ao salvar o roteiro:', error);
     throw error;
   }
 }

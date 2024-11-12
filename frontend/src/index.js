@@ -6,12 +6,14 @@ import Chat from './componentes/right/chat';
 import Message from './componentes/right/message';
 import Forms from './componentes/form/forms';
 import Modal from './componentes/form/modal';
-import DataComponent from './endPoints/dataClient';
+import DataComponent from './componentes/DataComponent';
+import HistoricosComponent from './componentes/HistoricosComponent';
 
 const App = () => {
   const [historicos, setHistoricos] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedRoteiro, setSelectedRoteiro] = useState(null);
+  const [idHistorico, setIdHistorico] = useState(13);
 
   useEffect(() => {
     async function fetchHistoricos() {
@@ -75,6 +77,7 @@ const App = () => {
       </div>
       <hr />
       <DataComponent />
+      <HistoricosComponent idHistorico={idHistorico} />
     </div>
   );
 };
