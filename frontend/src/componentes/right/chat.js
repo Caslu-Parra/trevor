@@ -14,7 +14,6 @@ export default function Chat({ formData, geminiResponse, children }) {
             icon: 'pi pi-save custom-icon',
             command: async () => {
                 try {
-                    // Salvar histórico
                     const historicoData = {
                         dt_ida: formData.departureDate,
                         dt_volta: formData.returnDate,
@@ -28,7 +27,6 @@ export default function Chat({ formData, geminiResponse, children }) {
                     };
                     const savedHistorico = await saveHistorico(historicoData);
 
-                    // Salvar roteiro
                     const roteiroData = {
                         msg: geminiResponse,
                         dt_exeo: new Date().toISOString(),
@@ -65,6 +63,28 @@ export default function Chat({ formData, geminiResponse, children }) {
                 </div>
             </div>
             {children}
+            
+            {/* Exibindo dados de formData e geminiResponse */}
+            {formData && geminiResponse && (
+                <div className="form-response">
+                    <h4>Detalhes da Viagem</h4>
+                    <ul>
+                        <li><strong>Destino:</strong> {formData.cityName}</li>
+                        <li><strong>Data de Ida:</strong> {formData.departureDate}</li>
+                        <li><strong>Data de Volta:</strong> {formData.returnDate}</li>
+                        <li><strong>Tipo de Viagem:</strong> {formData.tripType}</li>
+                        <li><strong>Viaja sozinho:</strong> {formData.travelAlone ? 'Sim' : 'Não'}</li>
+                        <li><strong>Com crianças:</strong> {formData.travelWithKids ? 'Sim' : 'Não'}</li>
+                        <li><strong>Com animais:</strong> {formData.travelWithPets ? 'Sim' : 'Não'}</li>
+                        <li><strong>Orçamento por Pessoa:</strong> {formData.budget}</li>
+                        <li><strong>Observação:</strong> {formData.obsViagem}</li>
+                    </ul>
+
+                    <h4>Roteiro Gerado</h4>
+                    <div>{geminiResponse}</div>
+                </div>
+            )}
+
             <div style={{ position: 'relative', height: '150px' }}>
                 <Toast ref={toast} />
                 <div style={{
