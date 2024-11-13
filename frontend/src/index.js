@@ -13,6 +13,8 @@ const App = () => {
   const [historicos, setHistoricos] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedRoteiro, setSelectedRoteiro] = useState(null);
+  const [formData, setFormData] = useState(null); // Estado para armazenar o formData
+  const [geminiResponse, setGeminiResponse] = useState(null); // Estado para armazenar a resposta do Gemini
   const [idHistorico, setIdHistorico] = useState(13);
 
   useEffect(() => {
@@ -21,7 +23,6 @@ const App = () => {
         const response = await fetch('/historicos');
         const data = await response.json();
 
-        // Ordenar os históricos pela data de execução (mais recentes primeiro)
         const sortedHistoricos = data.sort((a, b) => new Date(b.dt_exeo) - new Date(a.dt_exeo));
         setHistoricos(sortedHistoricos);
         setLoading(false);
@@ -37,6 +38,11 @@ const App = () => {
     setSelectedRoteiro(roteiro);
   };
 
+  const handleFormSubmit = ({ formData, geminiResponse }) => {
+    setFormData(formData);
+    setGeminiResponse(geminiResponse);
+  };
+
   if (loading) {
     return <div>Carregando...</div>;
   }
@@ -47,8 +53,8 @@ const App = () => {
         <Historico>
           <div 
             style={{
-              maxHeight: '300px',    // Altura fixa do container
-              overflowY: 'auto',     // Permite rolagem vertical
+              maxHeight: '300px',
+              overflowY: 'auto',
             }}
           >
             {historicos.map((historico, index) => {
@@ -63,22 +69,24 @@ const App = () => {
               return (
                 <Roteiro
                   key={index}
-                  title={`${historico.nome_destino}`}
-                img='https://bootdey.com/img/Content/avatar/avatar5.png'
-                data={formattedDate}  // Passando a data formatada
+                  title={historico.nome_destino}
+                  img='https://bootdey.com/img/Content/avatar/avatar5.png'
+                  data={formattedDate}
                   onClick={() => handleRoteiroClick(historico)}
                 />
               );
             })}
           </div>
         </Historico>
-        <Chat selectedRoteiro={selectedRoteiro}>
+
+        <Chat formData={formData} geminiResponse={geminiResponse}>
           <Message dtEnvio="2024-06-12 14:49:12" owner="trevor">
             Olá, eu sou o Trevor, seu assistente de viagem personalizado e vou te ajudar a ter um roteiro de viagem inesquecível. Preencha o formulário para que eu crie seu roteiro!
           </Message>
         </Chat>
+
         <Modal>
-          <Forms />
+          <Forms onFormSubmit={handleFormSubmit} />
         </Modal>
       </div>
       <hr />
