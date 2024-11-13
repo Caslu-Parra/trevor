@@ -3,6 +3,7 @@ import { SpeedDial } from 'primereact/speeddial';
 import React, { useRef } from 'react';
 import { Toast } from 'primereact/toast';
 import trevorImg from '../../img/trevor-02.png';
+import Message from './message';
 import './speedDial.css';
 import { saveRoteiro, saveHistorico } from '../../endPoints/saveClient';
 
@@ -66,23 +67,9 @@ export default function Chat({ formData, geminiResponse, children }) {
             
             {/* Exibindo dados de formData e geminiResponse */}
             {formData && geminiResponse && (
-                <div className="form-response">
-                    <h4>Detalhes da Viagem</h4>
-                    <ul>
-                        <li><strong>Destino:</strong> {formData.cityName}</li>
-                        <li><strong>Data de Ida:</strong> {formData.departureDate}</li>
-                        <li><strong>Data de Volta:</strong> {formData.returnDate}</li>
-                        <li><strong>Tipo de Viagem:</strong> {formData.tripType}</li>
-                        <li><strong>Viaja sozinho:</strong> {formData.travelAlone ? 'Sim' : 'Não'}</li>
-                        <li><strong>Com crianças:</strong> {formData.travelWithKids ? 'Sim' : 'Não'}</li>
-                        <li><strong>Com animais:</strong> {formData.travelWithPets ? 'Sim' : 'Não'}</li>
-                        <li><strong>Orçamento por Pessoa:</strong> {formData.budget}</li>
-                        <li><strong>Observação:</strong> {formData.obsViagem}</li>
-                    </ul>
-
-                    <h4>Roteiro Gerado</h4>
-                    <div>{geminiResponse}</div>
-                </div>
+                <Message dtEnvio={new Date().toISOString()} owner="trevor">
+                    {geminiResponse}
+                </Message>
             )}
 
             <div style={{ position: 'relative', height: '150px' }}>
