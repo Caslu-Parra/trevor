@@ -1,8 +1,6 @@
-
 export default function Roteiro(props) {
     return (
-        <a href="#" className="list-group-item list-group-item-action border-0">
-            
+        <a href="#" className="list-group-item list-group-item-action border-0" onClick={props.onClick}>
             <div className="d-flex align-items-start">
                 <img src={props.img} className="rounded-circle mr-1" alt={props.title} width="40" height="40" />
                 <div className="flex-grow-1 ml-3">
@@ -14,5 +12,5 @@ export default function Roteiro(props) {
                 </div>
             </div>
         </a>
-    )
+    );
 }
