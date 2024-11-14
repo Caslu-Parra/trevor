@@ -79,7 +79,7 @@ const App = () => {
           </div>
         </Historico>
 
-        <Chat formData={formData} geminiResponse={geminiResponse}>
+        <Chat formData={formData} geminiResponse={geminiResponse} setGeminiResponse={setGeminiResponse}>
           <Message dtEnvio="2024-06-12 14:49:12" owner="trevor">
             Olá, eu sou o Trevor, seu assistente de viagem personalizado e vou te ajudar a ter um roteiro de viagem inesquecível. Preencha o formulário para que eu crie seu roteiro!
           </Message>

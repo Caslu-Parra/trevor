@@ -1,13 +1,14 @@
 import 'primeicons/primeicons.css';
 import { SpeedDial } from 'primereact/speeddial';
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import { Toast } from 'primereact/toast';
 import trevorImg from '../../img/trevor-02.png';
 import Message from './message';
 import './speedDial.css';
 import { saveRoteiro, saveHistorico } from '../../endPoints/saveClient';
+import { getGeminiResponse } from '../../endPoints/geminiClient';  // Importando a função
 
-export default function Chat({ formData, geminiResponse, children }) {
+export default function Chat({ formData, geminiResponse, children, setGeminiResponse }) {
     const toast = useRef(null);
     const items = [
         {
@@ -45,8 +46,22 @@ export default function Chat({ formData, geminiResponse, children }) {
         {
             label: 'Refazer',
             icon: 'pi pi-refresh custom-icon',
-            command: () => {
-                toast.current.show({ severity: 'success', summary: 'Refazer', detail: 'Novos roteiros sendo gerados!' });
+            command: async () => {
+                try {
+                    toast.current.show({ severity: 'success', summary: 'Refazer', detail: 'Novos roteiros sendo gerados!' });
+
+                    const prompt = `Aqui está o seu novo roteiro: ${formData.getGeminiResponse}`;
+    
+                    console.log('Prompt montado:', prompt); // Adiciona este console.log para validar o prompt
+                    console.log('Resposta do Gemini:', getGeminiResponse);
+
+                    // Chama a função para gerar um novo roteiro
+                    const newRoteiro = await getGeminiResponse(prompt);  // Passa os dados do formulário para o Gemini //
+                    setGeminiResponse(newRoteiro);  // Atualiza a resposta do Gemini
+                } catch (error) {
+                    toast.current.show({ severity: 'error', summary: 'Erro', detail: 'Erro ao gerar novo roteiro!' });
+                    console.error('Erro ao gerar novo roteiro:', error);
+                }
             }
         }
     ];
@@ -68,7 +83,8 @@ export default function Chat({ formData, geminiResponse, children }) {
             {/* Exibindo dados de formData e geminiResponse */}
             {formData && geminiResponse && (
                 <Message dtEnvio={new Date().toISOString()} owner="trevor">
-                    {geminiResponse}
+                    {/* Verifica se geminiResponse é um objeto e converte para string se necessário */}
+                    {typeof geminiResponse === 'object' ? JSON.stringify(geminiResponse) : geminiResponse}
                 </Message>
             )}
 
