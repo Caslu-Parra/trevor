@@ -6,8 +6,6 @@ import Chat from './componentes/right/chat';
 import Message from './componentes/right/message';
 import Forms from './componentes/form/forms';
 import Modal from './componentes/form/modal';
-import DataComponent from './componentes/DataComponent';
-import HistoricosComponent from './componentes/HistoricosComponent';
 
 const App = () => {
   const [historicos, setHistoricos] = useState([]);
@@ -41,6 +39,10 @@ const App = () => {
   const handleFormSubmit = ({ formData, geminiResponse }) => {
     setFormData(formData);
     setGeminiResponse(geminiResponse);
+  };
+
+  const handleUpdateGeminiResponse = (newResponse) => {
+    setGeminiResponse(newResponse);
   };
 
   if (loading) {
@@ -79,7 +81,7 @@ const App = () => {
           </div>
         </Historico>
 
-        <Chat formData={formData} geminiResponse={geminiResponse}>
+        <Chat formData={formData} geminiResponse={geminiResponse} onUpdateGeminiResponse={handleUpdateGeminiResponse}>
           <Message dtEnvio="2024-06-12 14:49:12" owner="trevor">
             Olá, eu sou o Trevor, seu assistente de viagem personalizado e vou te ajudar a ter um roteiro de viagem inesquecível. Preencha o formulário para que eu crie seu roteiro!
           </Message>
@@ -89,9 +91,6 @@ const App = () => {
           <Forms onFormSubmit={handleFormSubmit} />
         </Modal>
       </div>
-      <hr />
-      <DataComponent />
-      <HistoricosComponent idHistorico={idHistorico} />
     </div>
   );
 };
