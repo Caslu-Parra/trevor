@@ -7,7 +7,7 @@ import Message from './componentes/right/message';
 import Forms from './componentes/form/forms';
 import Modal from './componentes/form/modal';
 import { obterHistoricos } from './endPoints/historicoClient';
-// import { obterRoteiros } from './endPoints/roteiroClient';
+import { obterRoteiros } from './endPoints/roteiroClient';
 
 const App = () => {
   const [historicos, setHistoricos] = useState([]);
@@ -30,18 +30,18 @@ const App = () => {
     fetchHistoricos();
   }, []);
 
-  // const handleRoteiroClick = async (historico) => {
-  //   console.log('Requisição para obter roteiro com id_historico:', historico.id_historico);
-  //   try {
-  //     const roteiro = await obterRoteiros(historico.id_historico);
-  //     console.log('Resposta do obterRoteiros:', roteiro);
-  //     setSelectedRoteiro(roteiro);
-  //     setGeminiResponse(roteiro[0].res_message); // Atualize o estado geminiResponse com res_message
-  //     setShowDefaultMessage(false);
-  //   } catch (error) {
-  //     console.error('Erro ao buscar roteiro:', error);
-  //   }
-  // };
+  const handleRoteiroClick = async (historico) => {
+    console.log('Requisição para obter roteiro com id_historico:', historico.id_historico);
+    try {
+      const roteiro = await obterRoteiros(historico.id_historico);
+      console.log('Resposta do obterRoteiros:', roteiro);
+      setSelectedRoteiro(roteiro);
+      setGeminiResponse(roteiro[0].res_message); // Atualize o estado geminiResponse com res_message
+      setShowDefaultMessage(false);
+    } catch (error) {
+      console.error('Erro ao buscar roteiro:', error);
+    }
+  };
 
   const handleFormSubmit = ({ formData, geminiResponse }) => {
     setFormData(formData);
@@ -79,7 +79,7 @@ const App = () => {
                   title={historico.nome_destino}
                   img='https://bootdey.com/img/Content/avatar/avatar5.png'
                   data={formattedDate}
-                  // onClick={() => handleRoteiroClick(historico)}
+                  onClick={() => handleRoteiroClick(historico)}
                 />
               );
             })}
