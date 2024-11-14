@@ -3,6 +3,7 @@ import { SpeedDial } from 'primereact/speeddial';
 import React, { useRef } from 'react';
 import { Toast } from 'primereact/toast';
 import trevorImg from '../../img/trevor-02.png';
+import Message from './message';
 import './speedDial.css';
 import { saveRoteiro, saveHistorico } from '../../endPoints/saveClient';
 
@@ -14,7 +15,6 @@ export default function Chat({ formData, geminiResponse, children }) {
             icon: 'pi pi-save custom-icon',
             command: async () => {
                 try {
-                    // Salvar histórico
                     const historicoData = {
                         dt_ida: formData.departureDate,
                         dt_volta: formData.returnDate,
@@ -28,7 +28,6 @@ export default function Chat({ formData, geminiResponse, children }) {
                     };
                     const savedHistorico = await saveHistorico(historicoData);
 
-                    // Salvar roteiro
                     const roteiroData = {
                         msg: geminiResponse,
                         dt_exeo: new Date().toISOString(),
@@ -65,6 +64,14 @@ export default function Chat({ formData, geminiResponse, children }) {
                 </div>
             </div>
             {children}
+            
+            {/* Exibindo dados de formData e geminiResponse */}
+            {formData && geminiResponse && (
+                <Message dtEnvio={new Date().toISOString()} owner="trevor">
+                    {geminiResponse}
+                </Message>
+            )}
+
             <div style={{ position: 'relative', height: '150px' }}>
                 <Toast ref={toast} />
                 <div style={{

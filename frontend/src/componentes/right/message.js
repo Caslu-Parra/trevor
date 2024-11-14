@@ -1,3 +1,5 @@
+import React from 'react';
+import ReactMarkdown from 'react-markdown';
 import trevorImg from '../../img/trevor-02.png';
 
 export default function Message(props) {
@@ -15,7 +17,7 @@ export default function Message(props) {
                     </div>
                     <div className="flex-shrink-1 bg-light rounded py-2 px-3 mr-3">
                         <div className="font-weight-bold mb-1">{props.owner}</div>
-                        {props.children}
+                        <ReactMarkdown>{props.children}</ReactMarkdown>
                     </div>
                 </div>
             </div>
