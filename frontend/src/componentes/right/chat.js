@@ -81,7 +81,7 @@ export default function Chat({ formData, geminiResponse, onUpdateGeminiResponse,
             {children}
             
             {/* Exibindo dados de formData e localGeminiResponse */}
-            {formData && localGeminiResponse && (
+            {localGeminiResponse && (
                 <Message dtEnvio={new Date().toISOString()} owner="trevor">
                     {localGeminiResponse}
                 </Message>

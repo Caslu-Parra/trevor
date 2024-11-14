@@ -6,48 +6,53 @@ import Chat from './componentes/right/chat';
 import Message from './componentes/right/message';
 import Forms from './componentes/form/forms';
 import Modal from './componentes/form/modal';
+import { obterHistoricos } from './endPoints/historicoClient';
+// import { obterRoteiros } from './endPoints/roteiroClient';
 
 const App = () => {
   const [historicos, setHistoricos] = useState([]);
-  const [loading, setLoading] = useState(true);
   const [selectedRoteiro, setSelectedRoteiro] = useState(null);
-  const [formData, setFormData] = useState(null); // Estado para armazenar o formData
-  const [geminiResponse, setGeminiResponse] = useState(null); // Estado para armazenar a resposta do Gemini
-  const [idHistorico, setIdHistorico] = useState(13);
+  const [formData, setFormData] = useState(null);
+  const [geminiResponse, setGeminiResponse] = useState(null);
+  const [showDefaultMessage, setShowDefaultMessage] = useState(true);
 
   useEffect(() => {
-    async function fetchHistoricos() {
+    const fetchHistoricos = async () => {
       try {
-        const response = await fetch('/historicos');
-        const data = await response.json();
-
-        const sortedHistoricos = data.sort((a, b) => new Date(b.dt_exeo) - new Date(a.dt_exeo));
-        setHistoricos(sortedHistoricos);
-        setLoading(false);
+        const data = await obterHistoricos();
+        const sortedData = data.sort((a, b) => new Date(b.dt_exeo) - new Date(a.dt_exeo));
+        setHistoricos(sortedData);
       } catch (error) {
-        console.error('Erro ao buscar os históricos:', error);
-        setLoading(false);
+        console.error('Erro ao buscar históricos:', error);
       }
-    }
+    };
+
     fetchHistoricos();
   }, []);
 
-  const handleRoteiroClick = (roteiro) => {
-    setSelectedRoteiro(roteiro);
-  };
+  // const handleRoteiroClick = async (historico) => {
+  //   console.log('Requisição para obter roteiro com id_historico:', historico.id_historico);
+  //   try {
+  //     const roteiro = await obterRoteiros(historico.id_historico);
+  //     console.log('Resposta do obterRoteiros:', roteiro);
+  //     setSelectedRoteiro(roteiro);
+  //     setGeminiResponse(roteiro[0].res_message); // Atualize o estado geminiResponse com res_message
+  //     setShowDefaultMessage(false);
+  //   } catch (error) {
+  //     console.error('Erro ao buscar roteiro:', error);
+  //   }
+  // };
 
   const handleFormSubmit = ({ formData, geminiResponse }) => {
     setFormData(formData);
     setGeminiResponse(geminiResponse);
+    setShowDefaultMessage(false);
   };
 
   const handleUpdateGeminiResponse = (newResponse) => {
     setGeminiResponse(newResponse);
+    setShowDefaultMessage(false);
   };
-
-  if (loading) {
-    return <div>Carregando...</div>;
-  }
 
   return (
     <div>
@@ -74,7 +79,7 @@ const App = () => {
                   title={historico.nome_destino}
                   img='https://bootdey.com/img/Content/avatar/avatar5.png'
                   data={formattedDate}
-                  onClick={() => handleRoteiroClick(historico)}
+                  // onClick={() => handleRoteiroClick(historico)}
                 />
               );
             })}
@@ -82,9 +87,11 @@ const App = () => {
         </Historico>
 
         <Chat formData={formData} geminiResponse={geminiResponse} onUpdateGeminiResponse={handleUpdateGeminiResponse}>
-          <Message dtEnvio="2024-06-12 14:49:12" owner="trevor">
-            Olá, eu sou o Trevor, seu assistente de viagem personalizado e vou te ajudar a ter um roteiro de viagem inesquecível. Preencha o formulário para que eu crie seu roteiro!
-          </Message>
+          {showDefaultMessage && (
+            <Message dtEnvio="2024-06-12 14:49:12" owner="trevor">
+              Olá, eu sou o Trevor, seu assistente de viagem personalizado e vou te ajudar a ter um roteiro de viagem inesquecível. Preencha o formulário para que eu crie seu roteiro!
+            </Message>
+          )}
         </Chat>
 
         <Modal>
