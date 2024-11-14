@@ -8,7 +8,6 @@ import Observacao from "./Observacao";
 import './DatePicker.css';
 import './CheckBox.css';
 import { getGeminiResponse } from '../../endPoints/geminiClient';
-import { saveRoteiro, saveHistorico } from '../../endPoints/saveClient';
 
 export default function Forms({ onFormSubmit }) {
     const [step, setStep] = useState(1); // Controla qual pergunta está sendo exibida
@@ -63,13 +62,19 @@ export default function Forms({ onFormSubmit }) {
             budget,
             obsViagem
         };
+        const prompt = `
+        Por favor, gere 5 roteiros de viagem para a cidade de ${formData.cityName}. 
+        A viagem será do tipo ${formData.tripType} e ocorrerá entre os dias ${formData.departureDate} e ${formData.returnDate}. 
+        Estarei viajando ${formData.travelAlone ? 'sozinho' : 'com companhia'}, 
+        ${formData.travelWithKids ? 'com crianças' : 'sem crianças'}, 
+        ${formData.travelWithPets ? 'com animais de estimação' : 'sem animais de estimação'}. 
+        Pretendo gastar até R$${formData.budget} por pessoa. 
+        Tenho as seguintes observações: ${formData.obsViagem || 'sem observações'}.
 
-        const prompt = `Quero que voce me gere 5 roteiros de viagem para: ${formData.cityName}. 
-                A viagem será do tipo ${formData.tripType} e ocorrera entre os dias ${formData.departureDate} e ${formData.returnDate}. 
-                Estarei viajando ${formData.travelAlone ? 'sozinho' : 'com companhia'}, 
-                ${formData.travelWithKids ? 'com crianças' : 'sem crianças'}, 
-                ${formData.travelWithPets ? 'com animais de estimação' : 'sem animais de estimação'}. 
-                Pretendo gastar até ${formData.budget} por pessoa. E tenho as seguintes observacoes: ${formData.obsViagem || 'sem observacoes'}`;
+        Considere a data como um fator importante na indicação dos roteiros. 
+        Se o período selecionado for de alta temporada ou baixa temporada, por favor, informe. 
+        Além disso, se houver algum evento nacional ou cultural importante na cidade durante o período, por favor, informe também.
+        `;
     
         console.log('Prompt montado:', prompt); // Adiciona este console.log para validar o prompt
     
