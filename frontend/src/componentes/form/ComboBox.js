@@ -8,7 +8,7 @@ export default function ComboBox(props) {
                 value={props.value}
                 onChange={props.onChange}
                 required={props.required}
-                className="date-picker-container" // Classe Bootstrap para estilização
+                className="date-picker-container"
             >
                 <option value="">Selecione</option>
                 {props.options.map((option, index) => (

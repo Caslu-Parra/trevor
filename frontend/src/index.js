@@ -7,7 +7,7 @@ import Message from './componentes/right/message';
 import Forms from './componentes/form/forms';
 import Modal from './componentes/form/modal';
 import { obterHistoricos } from './endPoints/historicoClient';
-import { obterRoteiros } from './endPoints/roteiroClient';
+import { obterRoteiro } from './endPoints/roteiroClient';
 
 const App = () => {
   const [historicos, setHistoricos] = useState([]);
@@ -17,7 +17,7 @@ const App = () => {
   const [showDefaultMessage, setShowDefaultMessage] = useState(true);
 
   useEffect(() => {
-    const fetchHistoricos = async () => {
+    const exibeHistoricos = async () => {
       try {
         const data = await obterHistoricos();
         const sortedData = data.sort((a, b) => new Date(b.dt_exeo) - new Date(a.dt_exeo));
@@ -27,14 +27,14 @@ const App = () => {
       }
     };
 
-    fetchHistoricos();
+    exibeHistoricos();
   }, []);
 
-  const handleRoteiroClick = async (historico) => {
+  const exibeRoteiro = async (historico) => {
     console.log('Requisição para obter roteiro com id_historico:', historico.id_historico);
     try {
-      const roteiro = await obterRoteiros(historico.id_historico);
-      console.log('Resposta do obterRoteiros:', roteiro);
+      const roteiro = await obterRoteiro(historico.id_historico);
+      console.log('Resposta do obterRoteiro:', roteiro);
       setSelectedRoteiro(roteiro);
       setGeminiResponse(roteiro[0].res_message); // Atualize o estado geminiResponse com res_message
       setShowDefaultMessage(false);
@@ -43,27 +43,21 @@ const App = () => {
     }
   };
 
-  const handleFormSubmit = ({ formData, geminiResponse }) => {
-    setFormData(formData);
-    setGeminiResponse(geminiResponse);
-    setShowDefaultMessage(false);
+  const geraHistorico = ({ formData, geminiResponse }) => {
+      setFormData(formData);
+      geraRoteiro(geminiResponse);
   };
-
-  const handleUpdateGeminiResponse = (newResponse) => {
-    setGeminiResponse(newResponse);
-    setShowDefaultMessage(false);
+  
+  const geraRoteiro = (newResponse) => {
+      setGeminiResponse(newResponse);
+      setShowDefaultMessage(false);
   };
 
   return (
     <div>
       <div className="row g-0">
         <Historico>
-          <div 
-            style={{
-              maxHeight: '300px',
-              overflowY: 'auto',
-            }}
-          >
+          <div style={{ maxHeight: '300px', overflowY: 'auto',}}>
             {historicos.map((historico, index) => {
               const formattedDate = new Date(historico.dt_exeo).toLocaleString('pt-BR', {
                 day: '2-digit',
@@ -79,14 +73,14 @@ const App = () => {
                   title={historico.nome_destino}
                   img='https://bootdey.com/img/Content/avatar/avatar5.png'
                   data={formattedDate}
-                  onClick={() => handleRoteiroClick(historico)}
+                  onClick={() => exibeRoteiro(historico)}
                 />
               );
             })}
           </div>
         </Historico>
 
-        <Chat formData={formData} geminiResponse={geminiResponse} onUpdateGeminiResponse={handleUpdateGeminiResponse}>
+        <Chat formData={formData} geminiResponse={geminiResponse} onUpdateGeminiResponse={geraRoteiro}>
           {showDefaultMessage && (
             <Message dtEnvio="2024-06-12 14:49:12" owner="trevor">
               Olá, eu sou o Trevor, seu assistente de viagem personalizado e vou te ajudar a ter um roteiro de viagem inesquecível. Preencha o formulário para que eu crie seu roteiro!
@@ -95,7 +89,7 @@ const App = () => {
         </Chat>
 
         <Modal>
-          <Forms onFormSubmit={handleFormSubmit} />
+          <Forms onFormSubmit={geraHistorico} />
         </Modal>
       </div>
     </div>
