@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-export async function obterRoteiros(idHistorico) {
+export async function obterRoteiro(idHistorico) {
   try {
     const response = await axios.get(`/roteiros/${idHistorico}`);
     return response.data;
