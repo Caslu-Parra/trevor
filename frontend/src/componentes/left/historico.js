@@ -6,7 +6,7 @@ export default function Historico(props) {
                     <div className="flex-grow-1">
                         <button 
                             type="button" 
-                            className="btn btn-primary w-100 my-3" // Margem vertical usando my-3
+                            className="btn btn-primary w-100 my-3" // Margem vertical (my-3)
                             data-toggle="modal" 
                             data-target="#exampleModal"
                         >
