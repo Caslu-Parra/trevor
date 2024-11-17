@@ -57,7 +57,7 @@ const App = () => {
     <div>
       <div className="row g-0">
         <Historico>
-          <div style={{ maxHeight: '300px', overflowY: 'auto',}}>
+          <div style={{ maxHeight: '60vh', overflowY: 'auto',}}>
             {historicos.map((historico, index) => {
               const formattedDate = new Date(historico.dt_exeo).toLocaleString('pt-BR', {
                 day: '2-digit',
