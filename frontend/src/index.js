@@ -21,7 +21,10 @@ const App = () => {
       try {
         const data = await obterHistoricos();
         const sortedData = data.sort((a, b) => new Date(b.dt_exeo) - new Date(a.dt_exeo));
-        setHistoricos(sortedData);
+        setHistoricos(sortedData.map(historico => ({
+          ...historico,
+          id_historico: String(historico.id_historico)
+        })));
       } catch (error) {
         console.error('Erro ao buscar históricos:', error);
       }
@@ -36,7 +39,7 @@ const App = () => {
       const roteiro = await obterRoteiro(historico.id_historico);
       console.log('Resposta do obterRoteiro:', roteiro);
       setSelectedRoteiro(roteiro);
-      setGeminiResponse(roteiro[0].res_message); // Atualize o estado geminiResponse com res_message
+      setGeminiResponse(roteiro[0].res_message);
       setShowDefaultMessage(false);
     } catch (error) {
       console.error('Erro ao buscar roteiro:', error);
@@ -44,20 +47,29 @@ const App = () => {
   };
 
   const geraHistorico = ({ formData, geminiResponse }) => {
-      setFormData(formData);
-      geraRoteiro(geminiResponse);
+    setFormData(formData);
+    geraRoteiro(geminiResponse);
+
+    const novoHistorico = {
+      dt_exeo: new Date().toISOString(),
+      nome_destino: formData.cityName,
+      id_historico: `local-${historicos.length + 1}`, // cria id local
+      res_message: geminiResponse 
+    };
+
+    setHistoricos([novoHistorico, ...historicos]);
   };
-  
+
   const geraRoteiro = (newResponse) => {
-      setGeminiResponse(newResponse);
-      setShowDefaultMessage(false);
+    setGeminiResponse(newResponse);
+    setShowDefaultMessage(false);
   };
 
   return (
     <div>
       <div className="row g-0">
         <Historico>
-          <div style={{ maxHeight: '300px', overflowY: 'auto',}}>
+          <div style={{ maxHeight: '60vh', overflowY: 'auto',}}>
             {historicos.map((historico, index) => {
               const formattedDate = new Date(historico.dt_exeo).toLocaleString('pt-BR', {
                 day: '2-digit',
@@ -73,7 +85,15 @@ const App = () => {
                   title={historico.nome_destino}
                   img='https://bootdey.com/img/Content/avatar/avatar5.png'
                   data={formattedDate}
-                  onClick={() => exibeRoteiro(historico)}
+                  onClick={() => {
+                    if (String(historico.id_historico).startsWith('local-')) {
+                      setSelectedRoteiro([historico]);
+                      setGeminiResponse(historico.res_message);
+                      setShowDefaultMessage(false);
+                    } else {
+                      exibeRoteiro(historico);
+                    }
+                  }}
                 />
               );
             })}
@@ -84,6 +104,11 @@ const App = () => {
           {showDefaultMessage && (
             <Message dtEnvio="2024-06-12 14:49:12" owner="trevor">
               Olá, eu sou o Trevor, seu assistente de viagem personalizado e vou te ajudar a ter um roteiro de viagem inesquecível. Preencha o formulário para que eu crie seu roteiro!
+            </Message>
+          )}
+          {geminiResponse && (
+            <Message dtEnvio={new Date().toISOString()} owner="trevor">
+              {geminiResponse}
             </Message>
           )}
         </Chat>
