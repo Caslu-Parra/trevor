@@ -1,20 +1,14 @@
 import 'primeicons/primeicons.css';
 import { SpeedDial } from 'primereact/speeddial';
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useRef } from 'react';
 import { Toast } from 'primereact/toast';
 import trevorImg from '../../img/trevor-02.png';
-import Message from './message';
 import './speedDial.css';
 import { saveRoteiro, saveHistorico } from '../../endPoints/saveClient';
 import { getGeminiResponse } from '../../endPoints/geminiClient';
 
 export default function Chat({ formData, geminiResponse, onUpdateGeminiResponse, children }) {
     const toast = useRef(null);
-    const [localGeminiResponse, setLocalGeminiResponse] = useState(geminiResponse);
-
-    useEffect(() => {
-        setLocalGeminiResponse(geminiResponse);
-    }, [geminiResponse]);
 
     const items = [
         {
@@ -36,7 +30,7 @@ export default function Chat({ formData, geminiResponse, onUpdateGeminiResponse,
                     const savedHistorico = await saveHistorico(historicoData);
 
                     const roteiroData = {
-                        msg: localGeminiResponse,
+                        msg: geminiResponse,
                         dt_exeo: new Date().toISOString(),
                         id_historico: savedHistorico.id
                     };
@@ -54,9 +48,8 @@ export default function Chat({ formData, geminiResponse, onUpdateGeminiResponse,
             icon: 'pi pi-refresh custom-icon',
             command: async () => {
                 try {
-                    const prompt = `A resposta anterior foi: "${localGeminiResponse}". Recrie 5 novos roteiros de viagem para mim, considerando as mesmas preferências anteriores.`;
+                    const prompt = `A resposta anterior foi: "${geminiResponse}". Recrie 5 novos roteiros de viagem para mim, considerando as mesmas preferências anteriores.`;
                     const novaResposta = await getGeminiResponse(prompt);
-                    setLocalGeminiResponse(novaResposta.text);
                     onUpdateGeminiResponse(novaResposta.text);
                 } catch (error) {
                     toast.current.show({ severity: 'error', summary: 'Erro', detail: 'Erro ao gerar novos roteiros!' });
@@ -79,13 +72,6 @@ export default function Chat({ formData, geminiResponse, onUpdateGeminiResponse,
                 </div>
             </div>
             {children}
-            
-            {/* Exibindo dados de formData e localGeminiResponse */}
-            {localGeminiResponse && (
-                <Message dtEnvio={new Date().toISOString()} owner="trevor">
-                    {localGeminiResponse}
-                </Message>
-            )}
 
             <div style={{ position: 'relative', height: '150px' }}>
                 <Toast ref={toast} />
