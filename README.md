@@ -13,7 +13,31 @@ Trevor é um assistente de viagens inteligente que te ajuda a planejar cronogram
 
 # **Documentação do Projeto: Sistema de Geração de Roteiros de Viagem**
 
----
+Para rodar o projeto:
+1. Na pasta backend, crie um arquivo .env e use os parametros do .env.template
+
+2. Abra um terminal para o backend:
+   ```
+   cd backend
+   ```
+
+   ```
+   npm i
+   ```
+   ```
+   npm start
+   ```
+3. Abra um novo terminal para a pasta frontend:
+   ```
+   cd frontend
+   ```
+   ```
+   npm i
+   ```
+   ```
+   npm start
+   ```
+
 
 ## **Objetivo**
 
@@ -27,7 +51,7 @@ Desenvolvido em ReactJS
 2. **Back-end**: Processamento das requisições e comunicação com o modelo ChatGPT.
 Desenvolvido em NodeJS
 3. **Banco de Dados**: Armazenamento de histórico e registros dos roteiros gerados.
-Desenvolvido com SQL Server
+Desenvolvido com PostgreSQL no Aiven. 
 
 ---
 ## **Front-end**
@@ -240,14 +264,14 @@ O back-end é responsável por receber os dados do front-end, fazer a integraç�
 
 2. **Estruturação do Prompt:**
    - Um prompt é criado com base nas entradas do usuário, seguindo a estrutura abaixo:
-      ```plaintext
-      Quero que você me gere 5 roteiros de viagem para: {cidade}. 
-      A viagem será do tipo {tipo de viagem} e ocorrerá entre os dias {data de partida} e {data de retorno}. 
-      Estarei viajando {sozinho ou com companhia}, 
-      {com ou sem crianças}, 
-      {com ou sem animais de estimação}. 
-      Pretendo gastar até {orçamento} por pessoa. E tenho as seguintes observações: {observações}.
-         ```
+
+   ```plaintext
+   Quero que você me gere 5 roteiros de viagem para: {cidade}. 
+   A viagem será do tipo {tipo de viagem} e ocorrerá entre os dias {data de partida} e {data de retorno}. 
+   Estarei viajando {sozinho ou com companhia}, 
+   {com ou sem crianças}, 
+   {com ou sem animais de estimação}. 
+   Pretendo gastar até {orçamento} por pessoa. E tenho as seguintes observações: {observações}.
 
 3. **Exemplo de Prompt:**
       ```plaintext
@@ -270,8 +294,7 @@ O back-end é responsável por receber os dados do front-end, fazer a integraç�
       - **Query de Seleção:**
       ```sql
       SELECT rot.id_exeo, rot.dt_exeo, rot.id_historico, hst.nome_destino
-      FROM log_roteiro rot LEFT JOIN historico hst ON rot.id_historico = hst.id`); ```
-
+      FROM log_roteiro rot LEFT JOIN historico hst ON rot.id_historico = hst.id;
 2. **Abertura do Roteiro Completo:**
       - O usuário pode visualizar um roteiro anterior ao clicar em um item na lista.
 
